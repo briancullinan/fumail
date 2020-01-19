@@ -1,0 +1,23 @@
+
+function doWork(data)
+{
+	$.ajax.post({
+		url: '/mail.php', 
+		dataType: 'json',
+		data: {
+			user: data.user,
+			path: data.path,
+			id: data.id,
+			access: data.access
+		},
+		success:function (data) {
+			$.send(data);
+			$.send({_status: 'done'});
+		},
+		error:function (data) {
+            $.send({_error: data.statusText});
+			$.send({_status: 'done'});
+		}
+	});
+}
+

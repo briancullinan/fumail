@@ -1,0 +1,83 @@
+// JavaScript Document
+
+var clientId = '61143827920-ok9rpqcq25phtggfrhaogkmlm8sed83d.apps.googleusercontent.com';
+var scopes = 'https://mail.google.com/ https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar';
+
+// Is there an easier way to do this?
+//   jsonp doesn't work because we can't read the hash from the response script
+function doGoogleLogin(immediate, state) 
+{
+	if(typeof immediate == 'undefined')
+		immediate == true;
+	if(typeof state == 'undefined')
+		state = 'getGoogleUser';
+	else
+	{
+		// set up callback to call getGoogleUser first then call callback
+		var callback = state;
+		state = 'fumail_' + CryptoJS.lib.WordArray.random(16);
+		window[state] = function (params) {
+			try {
+				// pass in callback to do this after we get user information
+				getGoogleUser(params, callback);
+			}
+			catch (e)
+			{
+				if(console)
+					console.log(e);
+			}
+			window[state] = null;
+		};
+	}
+	
+	// request new google token
+	// try a get first
+	var token_request = 'https://accounts.google.com/o/oauth2/auth' + 
+		'?redirect_uri=https://fumail.me' + (immediate ? '/google.php' : '') + 
+		'&approval_prompt=auto' +
+		'&client_id=' + clientId +
+		(immediate ? '&immediate=true' : '') + 
+		'&response_type=token' +
+		'&state=' + state +
+		'&scope=' + scopes;
+	if(immediate)
+		$('#google-load').attr('src', token_request);
+	else
+		window.location = token_request;
+};
+
+function getGoogleUser(params, callback)
+{
+	// try to request username
+	$.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+		'alt' : 'json',
+		'access_token' : params['access_token']
+	}, function (data) {
+		if(console)
+			console.log(data);
+		var account = {user: data.email, access: params['access_token'], expires: new Date().getTime() + (parseInt(params['expires_in']) * 1000)},
+			hit = false;
+		for(var i in accounts)
+		{
+			if(accounts[i].user == account.user)
+			{
+				accounts[i].access = account.access;
+				accounts[i].expires = account.expires;
+				hit = true;
+			}
+		}
+		if(!hit)
+			accounts[accounts.length] = account;
+		// store the accounts for the session
+		encryptAccounts();
+		
+		if(typeof callback == 'undefined')
+			window.location.hash = '#mail';
+		// do this after user info is loaded
+		else if(typeof callback == 'string' &&
+			typeof window[callback] != 'undefined')
+			window[callback].call(this, params);
+		else
+			callback.call(this, params);
+	});
+}

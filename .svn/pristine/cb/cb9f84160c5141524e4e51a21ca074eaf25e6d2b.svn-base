@@ -1,0 +1,127 @@
+<?php
+include_once 'config.php';
+
+if($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+	
+	// validate username to RFC
+	if(count($_SESSION['accounts']) == 0)
+	{
+		header('HTTP/1.1 500 No accounts');
+	}
+	
+	foreach($_SESSION['accounts'] as $i => $account)
+	{
+		// load mail within selected account
+		if(isset($_POST['path']) && $_POST['path'] != '' &&
+			substr($_POST['path'], 0, strlen($account->user)) != $account->user)
+			continue;
+		
+		$user_host = explode('@', $account->user);
+		if(count($user_host) < 2)
+		{
+			header('HTTP/1.1 500 Could not read account information');
+			continue;
+		}
+		
+		if(preg_match('/^(?:[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+)*|' .
+			'"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")$/', $user_host[0]) && 
+			preg_match('/^(?P<host>[a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&\'()*+,;=:]+\])(:(?P<port>[0-9]+))?$/', $user_host[1]))
+		{
+			$host_port = explode(':', $user_host[1]);
+			$connect = '{' . $host_port[0] . ':' . (count($host_port) > 1 ? $host_port[1] : '993') . '/imap/ssl/novalidate-cert}';
+			$stream = imap_open($connect, $user_host[0], $account->pass) or die("can't connect: " . imap_last_error());
+			
+			// load folder list
+			$list = array_values(imap_list($stream, $connect, '*'));
+			
+			// list messages and their summary headers
+			if(isset($_POST['path']) && $_POST['path'] != '')
+			{
+				$path = str_replace($user_host[0] . '@' . $host_port[0], '', $_POST['path']);
+				if(array_search($connect . 'INBOX' . $path, $list))
+					imap_reopen($stream, $connect . 'INBOX' . $path);
+				else
+				{
+					header('HTTP/1.1 401 Path not found');
+					// unset uid, so it is not search below
+					unset($_POST['uid']);
+				}
+			}
+			
+			// always get info about selected mailbox that the message is in
+			$info = imap_mailboxmsginfo($stream);
+			
+			// load a single message
+			if(isset($_POST['uid']) && intval($_POST['uid']) != 0)
+			{
+				$uid = intval($_POST['uid']);
+				$headers = array_pop(imap_fetch_overview($stream, $uid . ':' . $uid));
+				// check if message size is larger than 4 megs
+				//   if it is, wait for the client to allocate the space and ask for it
+				$message = imap_fetchheader($stream, $uid);
+				if($headers->size < 4 * 1024 * 1024 || isset($_POST['download']))
+				{
+					$body = utf8_encode(imap_body($stream, $uid));
+				}
+				
+			}
+			else
+			{
+				// paginate
+				$sorted = imap_sort($stream, SORTARRIVAL, 1);
+				// start at zero instead of the usual 1 because we 
+				//   are using the sorting above to get the actual ID
+				$start = intval($_POST['start']);
+				$end = intval($_POST['end']) == 0 ? 100 : intval($_POST['end']);
+				$headers = array();
+				for($i = $start; $i < $end; $i++)
+					$headers[$i] = imap_headerinfo($stream, $sorted[$i]);
+			}
+			header('Content-Type: text/plain');
+			
+			print json_encode(array(
+				'connect' => $connect,
+				'user' => $user_host[0],
+				'host' => $host_port[0],
+				'folders' => $list,
+				'headers' => $headers,
+				'info' => $info,
+				'message' => $message,
+				'body' => $body), JSON_PRETTY_PRINT);
+	
+			session_write_close();
+			ob_end_flush();
+			flush();
+			imap_gc($stream, IMAP_GC_ELT | IMAP_GC_ENV | IMAP_GC_TEXTS);
+			exit;
+		}
+	
+	}
+
+}
+
+// on a get request, provide this blank template ONLY!, 
+//   do not put affecting logic in here, all logic should be in the 
+//   javascript block that loads this page
+?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link rel="stylesheet" type="text/css" href="/style.css"/>
+<script type="text/javascript" src="/jquery.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+	$('body').empty();
+	parent.refreshBody($(document).first());
+});
+</script>
+</head>
+<body id="attachments">
+Loading...
+</body>
+<html>

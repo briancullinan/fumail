@@ -1,0 +1,140 @@
+// openPGP uses this for some reason, there's NO DOM!
+$.text = function (data) {
+	return {html: function ()
+		{
+			return data;
+		}
+	}
+};
+
+// fix for openpgp errors
+window = {
+	// Can't use local storage in Web Worker, we have to import them
+	localStorage: {
+		getItem: function (name) { 
+			return typeof localStorage[name] == 'undefined' 
+				? null 
+				: localStorage[name]; },
+		setItem: function (name, value) { localStorage[name] = value; }
+	}
+};
+
+var localStorage = {};
+
+importScripts('/rollups/sha1.js');
+importScripts('/rollups/tripledes.js');
+importScripts('/openpgp.js');
+openpgp.init();
+
+function doWork(data)
+{
+    var privateKey,
+        recipientKeys = [],
+        unknowns = [];
+
+    // find private key for the selected sender
+    for(var j in data.privateKeys)
+    {
+        var key = openpgp.read_privateKey(data.privateKeys[j])[0];
+        // can a single key contain multiple user ids?  Maybe we just make a new FuMail key with all their account user Ids in one.
+        if(key.userIds[0].text.indexOf(data.from) > -1)
+        {
+            privateKey = keys[j];
+            break;
+        }
+    }
+
+    // add all the recipients to the encrypted message
+    for(var j in data.recipients)
+    {
+        var hit = false;
+        for(var i in data.publicKeys)
+        {
+            var privkey = openpgp.read_publicKey(data.publicKeys[i])[0];
+            if(privkey.obj.userIds[0].text.indexOf(data.recipients[j]) > -1)
+            {
+                recipientKeys[recipientKeys.length] = privkey.obj;
+                hit = true;
+                break;
+            }
+        }
+        if(!hit)
+        {
+            unknowns[unknowns.length] = data.recipients[j];
+        }
+    }
+
+    if(unknowns.length > 0)
+    {
+        // TODO: display a message when there are unknown recipients, ask to invite them
+        $.send({_sending: 'Missing keys'});
+        $.send({_status: 'done'});
+        return;
+    }
+
+    $.send({_status: 'Encrypting...'});
+			
+	// do the encryption
+	var encBoundary = '----fumail' + CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex),
+		// wrap message in PGP/MIME, do we want to do this or inline?  This may has compatibility issues as not all clients support it
+		message = 'Content-Type: multipart/mixed; boundary="' + encBoundary + '"\r\n' +
+			'\r\n' + 
+			'--' + encBoundary + '\r\n' +
+			'Content-Type: text/html; charset=ISO-8859-1\r\n' + 
+			'Content-Transfer-Encoding: quoted-printable\r\n' +
+			'\r\n' + 
+			'<html><body>\r\n' + 
+			data.message +
+			'</body></html>\r\n' + 
+			'\r\n\r\n' + 
+			'--' + encBoundary + '--',
+		encrypted = openpgp.write_signed_and_encrypted_message(privateKey, recipientKeys, message);
+	
+	// create mail message
+	var boundary = '----fumail' + CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex),
+		envelope = 'From: <' + data.from + '>\r\n' +
+		'To: <' + data.recipients.join('>,<') + '>\r\n' +
+		'Subject: ' + data.subject + '\r\n' +
+		'MIME-Version: 1.0\r\n' + 
+		'User-Agent: FuMail version-1.0\r\n' + 
+		'Content-Type: multipart/encrypted; protocol="application/pgp-encrypted";\r\n' + 
+		'	boundary="' + boundary + '"\r\n' + 
+		'\r\n' + 
+		'--' + boundary + '\r\n' + 
+		'Content-Type: application/pgp-encrypted\r\n' + 
+		'Content-Description: PGP/MIME version identification\r\n' +
+		'\r\n' +
+		'Version: 1\r\n' +
+		'\r\n' + 
+		'--' + boundary + '\r\n' +
+		'Content-Type: application/octet-stream; name="encrypted.asc"\r\n' + 
+		'Content-Description: FuMail encrypted message\r\n' + 
+		'Content-Disposition: inline; filename="encrypted.asc"\r\n' + 
+		'\r\n' + 
+		encrypted + '\r\n' +
+		'\r\n' + 
+		'--' + boundary + '--';
+		
+	$.send({_status: 'Sending...'});
+	// send message to server for relay
+	$.ajax.post({
+        url: '/send.php',
+        dataType: 'json',
+        data: {
+            user : data.from,
+            to: data.recipients.join('>,<'),
+            mail: envelope,
+            access: data.access
+        },
+        success: function (response) {
+            // TODO: handle errors gracefully
+            $.send(response.text);
+            $.send({_status: 'done'});
+        },
+        error: function (response) {
+            $.send(response.text);
+            $.send({_status: 'done'});
+        }
+    });
+}
+

@@ -1,0 +1,62 @@
+<?php include_once 'config.php'; ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Welcome to FUMAIL</title>
+<link rel="stylesheet" type="text/css" href="/style.css"/>
+<script type="text/javascript" src="/rollups/tripledes.js"></script>
+<script type="text/javascript" src="/jquery.js"></script>
+<script type="text/javascript" src="/jquery.cookie.js"></script>
+<script type="text/javascript" src="/jquery.hive.js"></script>
+<script type="text/javascript" src="/mail.js"></script>
+<script type="text/javascript" src="/nav.js"></script>
+<script type="text/javascript">
+
+// initialize everything using functions from mail.js
+$(document).ready(function () {
+	$(window).on('hashchange', checkHash);
+	
+	returnPath = window.location.hash;
+	if((master = sessionStorage[$.cookie('PHPSESSID') + 'password']) != null)
+		window.location.hash = '#mail';
+	else
+	<?php 
+	if($_SESSION['user']) { ?>
+	window.location.hash = '#login';
+	<?php } else { ?>
+	window.location.hash = '#intro';
+	<?php } ?>
+	
+	// fire hash changed at least once
+	$(window).trigger('hashchange');
+				
+	setBindings();
+});
+
+</script>
+</head>
+
+<body id="mail">
+<div id="overlay" style="display:none;"></div>
+<?php include 'intro.php'; ?>
+<?php include 'signup.php'; ?>
+<?php include 'how.php'; ?>
+<?php include 'settings.php'; ?>
+<?php include 'login.php'; ?>
+<?php include 'create.php'; ?>
+<?php include 'reset.php'; ?>
+<div id="menubar">
+    <h1 style="margin:20px 30px; float:left;">FuMail</h1>
+    <input name="search" id="search" type="text" style="float:left; margin:25px 5px; width:300px;" />
+    <a href="#search" class="little-btn" style="margin:25px 5px; float:left; background-color:#33AABB;">Search</a>
+    <a href="#settings" class="little-btn" style="margin:25px 5px; float:left; background-color:#33AABB;"><span class="settings">&nbsp;</span></a>
+    <div class="divider">&nbsp;</div>
+</div>
+<ul id="folders"></ul>
+<table id="list">
+    <tbody>
+    </tbody>
+</table>
+</body>
+</html>

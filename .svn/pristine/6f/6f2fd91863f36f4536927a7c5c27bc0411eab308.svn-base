@@ -1,0 +1,375 @@
+/* CSS Document */
+
+html, body {
+	margin:0px;
+	padding:0px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	height:100%;
+	width:100%;
+	color:#333;
+}
+
+body {
+	background-color:#FFF;
+}
+
+table.nosey h2 {
+	padding:0px;
+	margin:0px;
+}
+
+table.nosey .list h2:first-child, .nosey .list h2:last-child {
+	color:#ccc;
+}
+
+table.nosey .list h2:nth-child(2), table.nosey .list h2:nth-child(4) {
+	color:#999;
+}
+
+.intro-btn:hover,
+.little-btn:hover {
+	text-decoration:underline;
+	background-position:50% 50%;
+}
+
+.intro-btn, .little-btn {
+	font-size:26px;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	color:#FFFFFF;
+	padding: 5px 10px;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+	text-decoration:none;
+	border-radius: 1px;
+	margin:5px;
+}
+
+.little-btn
+{
+	margin:5px;
+	font-size:16px;
+}
+
+.dialog {
+	width:750px;
+	left:50%;
+	top:50%;
+	margin-left:-375px;
+	position:relative;
+	background-color:#fff;
+	padding:10px;
+	position:absolute;
+	padding:10px;
+	border:1px solid #ccc;
+	z-index:1001;
+	text-align:left;
+	display:none;
+	margin-top:-200px;
+	overflow:hidden;
+}
+
+input[type="email"], input[type="number"], 
+input[type="password"], input[type="tel"], 
+input[type="text"], input[type="url"]
+{
+	border-radius: 1px;
+	padding:5px 5px;
+	border:1px solid #ccc;
+}
+
+input[type="email"]:focus, input[type="number"]:focus, input[type="password"]:focus, input[type="tel"]:focus, input[type="text"]:focus, input[type="url"]:focus {
+    border: 1px solid #33AABB;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset;
+    outline: medium none;
+}
+
+table.fancy tr.error td:last-child, p.error {
+	color:#CC3333;
+	font-weight:bold;
+}
+
+table.fancy td, table.fancy th {
+	padding:10px;
+	vertical-align:top;
+}
+
+table.fancy tr td:first-child, table.fancy tr th:first-child {
+	width:150px;
+	vertical-align:middle;
+}
+
+table.fancy tr td:first-child {
+	background-color:#CCC;
+}
+
+table.fancy tr:nth-child(even) {
+	background-color:#CFF;
+}
+
+table.fancy tr:nth-child(odd) {
+	background-color:#FFF;
+}
+
+table.fancy th {
+	text-align:center;
+	background-color:#33AABB;
+	color:#ffffff;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+}
+
+#setters {
+	height:300px;
+}
+
+#overlay {
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index:1000;
+	background:#ccc;
+	opacity:0.5;
+}
+
+.little-btn .settings {
+	background: url("/icons.png") no-repeat scroll 0 -472px transparent;
+	width: 19px;
+	display:inline-block;
+}
+
+.little-btn .close {
+	background: url("/icons2.png") no-repeat scroll 0 -373px transparent;
+	width:24px;
+	height:24px;
+	display:inline-block;
+}
+
+.divider {
+	clear:both;
+	height:1px;
+	width:100%;
+	background-color:#CCC;
+}
+
+#folders {
+    clear: both;
+    max-height: 600px;
+    overflow: auto;
+	width:200px;
+	float:left;
+	position:fixed;
+	z-index:100;
+	margin-top:80px;
+	background-color:#fff;
+}
+
+#folders a {
+	padding: 5px 10px;
+	text-decoration:none;
+	border-radius: 1px;
+	display:inline-block;
+	width:100%;
+	color:#333;
+	outline:none;
+	white-space:nowrap;
+}
+
+#folders li {
+	overflow:hidden;
+}
+
+#folders a:hover {
+	background-color:#ddd;
+}
+
+#folders a:focus {
+	color:#33AABB;
+	font-weight:bold;
+	border-left:3px solid #33AABB;
+	border-bottom:1px solid #33AABB;
+}
+
+#folders, #folders ul {
+    list-style-image: none;
+    list-style-type: none;
+    padding:0px 10px;
+}
+
+#folders ul {
+	display:none;
+}
+
+#folders a.selected {
+	color:#FF8800;
+	font-weight:bold;
+	border-left:3px solid #FF8800;
+	border-bottom:1px solid #FF8800;
+}
+
+#folders ul.expand {
+	display:block;
+}
+
+#list {
+    border-spacing: 0;
+    float: left;
+    padding-left: 230px;
+    table-layout: fixed;
+    width: 100%;
+	position:relative;
+	z-index:99;
+	margin-top:80px;
+}
+
+#list td {
+	border-bottom:1px solid #CCCCCC;
+	padding:0px;
+}
+
+#list tr {
+	background-color:#eee;
+}
+
+#list tr.unseen {
+	background-color:#fff;
+	font-weight:bold;
+}
+
+#list tr td:first-child {
+	border-left:2px dotted #CCCCCC;
+	border-right:2px dotted #CCCCCC;
+	width:2px;
+}
+
+#list tr:hover td {
+	border-bottom:1px solid #FF8800;
+}
+
+#list tr:hover td:first-child {
+	border-left:2px dotted #FF8800;
+	border-right:2px dotted #FF8800;
+}
+
+#list a {
+	white-space:nowrap;
+	padding:5px;
+	overflow:hidden;
+	text-decoration:none;
+	color:#333;
+	display:block;
+	outline:none;
+}
+
+#list td:nth-child(1) {
+	width:200px;
+}
+
+#list td:nth-child(3) {
+	width:200px;
+}
+
+#menubar {
+	background-color:#fff;
+	position:fixed;
+	z-index:999;
+	width:100%;
+}
+
+table.message {
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	border:0px;
+	height:500px;
+	width:600px;
+	background-color:#fff;
+	z-index:102;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	border-radius: 1px;
+	padding:0px;
+	margin:10px;
+	table-layout:fixed;
+	border-spacing:0px;
+	border-collapse:separate;
+}
+
+table.message.collapsed {
+	height:24px;
+	width:200px;
+}
+
+table.message.collapsed tr {
+	display:none;
+}
+
+table.message.collapsed thead tr:first-child {
+	display:table-row;
+}
+
+table.message th {
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	padding: 5px 10px;
+	text-align:left;
+	overflow:hidden;
+	font-weight:normal;
+	vertical-align:middle;
+	height:1px;
+}
+
+table.message thead tr:first-child th span {
+	font-weight:bold;
+}
+table.message thead tr:first-child th:first-child a {
+	color:#fff;
+	text-decoration:none;
+	padding: 5px 10px;
+}
+
+table.message thead tr:first-child th:first-child {
+	border-left:1px solid #333;
+	padding:0px;
+}
+
+table.message thead tr:first-child th:last-child {
+	border-right:1px solid #333;
+	width:50px;
+}
+
+table.message thead tr:first-child th {
+	border-bottom:1px solid #333;
+	border-top:1px solid #333;
+	background-color:#333;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	color:#FFFFFF;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+	text-decoration:none;
+	white-space:nowrap;
+	border-left:0px;
+	border-right:0px;
+}
+
+table.message tbody td {
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	padding:5px;
+}
+
+table.message iframe {
+    border: 0 none;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+}
+
+

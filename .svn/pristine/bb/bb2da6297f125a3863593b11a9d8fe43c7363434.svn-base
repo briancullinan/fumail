@@ -1,0 +1,111 @@
+<?php
+include_once 'config.php';
+if(count($_POST))
+{
+	$errors = array();
+	// validate username
+	if(!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $_POST['username']) || strlen($_POST['username']) > 20)
+		$errors['username'] = true;
+	
+	// validate password
+	if(!preg_match('/^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9])\S+$/', $_POST['password']))
+		$errors['password'] = true;
+	
+	if($_POST['password'] != $_POST['confirm'])
+		$errors['confirm'] = true;
+	
+	if(!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $_POST['reset']))
+		$errors['reset'] = true;
+	
+	if($_POST['email'] != '' && !preg_match('/^[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i', $_POST['email']))
+		$errors['email'] = true;
+	
+	if($_POST['phone'] != '' && !preg_match('/^\(?\b[0-9]{3}\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}\b$/', $_POST['phone']))
+		$errors['phone'] = true;
+		
+	if(!count($errors))
+	{
+		// check if username already exists
+		$stmt = $link->prepare('SELECT * FROM users WHERE username=:username');
+		$stmt->execute(array(
+			':username' => $_POST['username']
+		));
+		if($stmt->fetch())
+			$errors['username'] = true;
+		
+		if(!count($errors))
+		{
+			// insert new user in to the database
+			$stmt = $link->prepare('INSERT INTO users (username, password, reset, email, phone) VALUES (:username, :password, :reset, :email, :phone)');
+			$stmt->execute(array(
+				':username' => $_POST['username'],
+				':password' => hash('sha512', $_POST['password'] + SALT),
+				':reset' => hash('sha512', $_POST['reset'] + SALT),
+				':email' => $_POST['email'],
+				':phone' => $_POST['phone']
+			));
+			
+			print 'success';
+			exit;
+		}
+	}
+}
+?>
+<div class="dialog" id="signup" style="height:500px; margin-top:-250px;">
+<h1>Sign-up</h1>
+<h3>3 simple steps: <a href="#signup" class='little-btn' style="background-color:#666;">Basic information</a> <a href="#settings" class='little-btn' style="background-color:#777;">Security settings</a> <a href="#create" class='little-btn' style="background-color:#888;">Backup key</a></h3>
+<p id="compatibility-check" style="display:none;">Your browser is compatible with our service! :)
+<script type="text/javascript">
+$(document).ready(function () {
+	if(typeof localStorage != "undefined")
+		$('#compatibility-check').show();
+});
+</script></p>
+<div style="overflow:auto; height:300px;">
+<table class="fancy" id="result">
+<thead>
+<tr>
+<th colspan="2">Please fill out some information below:</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="<?php print isset($errors['username']) ? 'error' : ''; ?>">
+<td>Username</td>
+<td><input type="text" name="username" id="username" value="<?php print isset($_POST['username']) ? htmlspecialchars($_POST['username'], ENT_QUOTES) : ''; ?>" /></td>
+<td>This is used to log in to your account, enter at least 1 letter before any numbers and less than 20 characters long.</td>
+</tr>
+<tr class="<?php print isset($errors['password']) ? 'error' : ''; ?>">
+<td>Password</td>
+<td><input type="password" name="password" id="password" value="<?php print isset($_POST['password']) ? htmlspecialchars($_POST['password'], ENT_QUOTES) : ''; ?>" /></td>
+<td>Enter a secret memorable code at least 8 characters with at least 1 upper-case, 1 lower-case, 1 number.</td>
+</tr>
+<tr class="<?php print isset($errors['confirm']) ? 'error' : ''; ?>">
+<td>Confirm password</td>
+<td><input type="password" name="confirm" id="confirm" value="<?php print isset($_POST['confirm']) ? htmlspecialchars($_POST['confirm'], ENT_QUOTES) : ''; ?>" /></td>
+<td>In order to make sure you remember the password you just entered above, enter it again here.</td>
+</tr>
+<tr class="<?php print isset($errors['reset']) ? 'error' : ''; ?>">
+<td>Reset key</td>
+<td><input type="password" name="reset" id="resetkey" value="<?php print isset($_POST['reset']) ? htmlspecialchars($_POST['reset'], ENT_QUOTES) : ''; ?>" /></td>
+<td>This could be your pets name or best friends city of birth, just something you will remember.</td>
+</tr>
+<tr class="<?php print isset($errors['email']) ? 'error' : ''; ?>">
+<td>Alternate email (optional)</td>
+<td><input type="email" name="email" id="email" value="<?php print isset($_POST['email']) ? htmlspecialchars($_POST['email'], ENT_QUOTES) : ''; ?>" /></td>
+<td>Just in-case you forget your password.</td>
+</tr>
+<tr class="<?php print isset($errors['phone']) ? 'error' : ''; ?>">
+<td>Phone number (optional)</td>
+<td><input type="tel" name="phone" id="phone" value="<?php print isset($_POST['phone']) ? htmlspecialchars($_POST['phone'], ENT_QUOTES) : ''; ?>" /></td>
+<td>Just in-case you forget your password.</td>
+</tr>
+<tr>
+<td>Note</td>
+<td colspan="2">Leaving phone number and alternate email fields blank means that you will, with 100% confidence in yourself, even when you get old and senile, remember your own password; there is no reason for us to ever contact you or reset your password.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center;"><a href="#signup-cancel" class="intro-btn" style="background-color:#FF8800;">Close</a><a href="#signup-next" class="intro-btn" style="background-color:#33AABB;">Save</a></p>
+</div>

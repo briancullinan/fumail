@@ -1,0 +1,141 @@
+@import url("/jquery-te-1.4.0.css");
+
+.jqte_tool.jqte_tool_1
+{
+    padding:2px;
+}
+
+.jqte_tool.jqte_tool_1 .jqte_tool_icon
+{
+    background: url("jquery-te.png") no-repeat scroll -6px -23px transparent;
+    height:6px;
+    width:9px;
+}
+
+.jqte_tool.jqte_tool_1 .jqte_tool_text, .jqte_linktypes a
+{
+    color: inherit;
+}
+
+.jqte *, .jqte_tool.jqte_tool_1 .jqte_tool_text, .jqte_linktypes a, .jqte_titleText
+{
+    font-family:'Open Sans',Helvetica,sans-serif;
+    font-weight: inherit;
+    font-size:inherit;
+}
+
+.jqte_tool, .jqte_tool_icon, .jqte_tool_label, .jqte_tool_text
+{
+    font-family:'Open Sans',Helvetica,sans-serif;
+    font-size:1.05em;
+    font-weight: 300;
+    font-style:normal;
+    color: inherit;
+}
+
+.jqte_editor h1
+{
+    max-width:none;
+    padding:0;
+    margin:0;
+}
+
+.jqte_editor h1[align="left"]
+{
+    text-align:left;
+}
+
+.jqte_editor h1[align="right"]
+{
+    text-align:right;
+}
+
+.jqte_editor h1[align="center"]
+{
+    text-align:center;
+}
+
+.jqte_tool, .jqte_linkbutton
+{
+    padding:5px;
+    margin:0px;
+    background-image:url("/overlay.png");
+    background-repeat:repeat-x;
+    background-position:0% 0%;
+    border-radius:2px;
+    background-color: #eeeeee;
+    color: inherit;
+    border:1px solid #EEEEEE;
+    border-radius: 2px;
+}
+
+.jqte_linkinput
+{
+    width:100%;
+    max-width:300px;
+}
+
+.jqte_tool:hover, .jqte_linkbutton:hover
+{
+    background-color: #dddddd;
+    background-position:50% 50%;
+    border-color: #BBBB33;
+    box-shadow: none;
+}
+
+.jqte_tool .jqte_tool_icon,
+.jqte_tool .jqte_tool_label
+{
+    border:none !important;
+}
+
+.jqte_linkform
+{
+    padding:1px;
+    border-color: #BB66BB;
+    border-style: solid;
+    border-width: 0 0 1px 3px;
+}
+
+.jqte_linktypeselect
+{
+    width:auto;
+}
+
+.jqte_linktypeview
+{
+    padding:5px 15px 5px 5px !important;
+}
+
+.jqte_linktypearrow
+{
+    top:40%;
+}
+
+.jqte_tool.jqte_tool_1 .jqte_tool_label
+{
+    height:auto;
+    width:auto;
+    padding: 0px 15px 0px 0px;
+}
+
+.jqte_linkbutton
+{
+    margin:0px 5px !important;
+}
+
+.jqte_linktypes
+{
+    width:auto;
+}
+
+.jqte_fontsizes
+{
+    height:auto;
+}
+
+.jqte_placeholder_text
+{
+    top:5px;
+    color:#999999;
+}

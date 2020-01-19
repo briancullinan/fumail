@@ -1,0 +1,11 @@
+-- General
+Compose mail, using drag and drop events to read file
+Synchronize settings by encrypting using temporary key and 
+  uploading to server, it is deleted when client receives it
+  Just like Firefox, the keys are only known to the client
+Support signatures in text form and encrypted form, find how to do both but display it as one
+Does using a Worker for decryption have any problems with copying large files?
+Offer <name>@fumail.me email addresses.
+Manage public keys and contacts
+Use a server with lots of temporary memory and bandwidth to access email servers
+Build a social network on trust

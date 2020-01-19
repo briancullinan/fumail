@@ -1,0 +1,71 @@
+/* CSS Document */
+@media (min-width:25em)
+{
+	.menu #content
+	{
+		left:15em;
+		right:-15em;
+	}
+}
+
+@media (min-width:40em)
+{
+    .menu #menubar h1 {
+        margin-left:-18.75em;
+    }
+}
+
+@media (min-width:46em)
+{
+
+	.message
+	{
+		margin: 2.31em auto -2.31em auto;
+	}
+	
+	.dialog
+	{
+		margin: 0 auto;
+	}
+
+	#mail a {
+		font-size:1em;
+		padding:0;
+		height: 1.7em;
+	}
+	
+	#mail a span {
+		background-color:inherit;
+	}
+	
+	#mail a span:nth-child(2) {
+		width:22%;
+		position:static;
+		font-size:1em;
+	}
+	
+	#mail a span:nth-child(3) {
+		width:54%;
+	}
+	
+	#mail a span:nth-child(4) {
+		max-width:22%;
+		position:absolute;
+		right:0px;
+		font-size:1em;
+	}
+	
+	#login > div,
+	#login > ul,
+	#intro div,
+	#intro ul {
+		margin:2.24em 0 0;
+		clear:none;
+		float: left;
+		width: 48%;
+	}
+}
+
+@media (min-width:60em)
+{
+}

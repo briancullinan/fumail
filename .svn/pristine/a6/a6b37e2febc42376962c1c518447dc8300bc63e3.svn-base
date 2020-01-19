@@ -1,0 +1,7 @@
+-- General
+Compose mail, using drag and drop events to read file
+Synchronize settings by encrypting using temporary key and 
+  uploading to server, it is deleted when client receives it
+Does using a Worker for decryption have any problems with copying large files?
+Manage public keys and contacts
+Build a social network on trust

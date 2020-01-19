@@ -1,0 +1,94 @@
+/* CSS Document */
+@media (min-width:25em)
+{
+	.menu #content
+	{
+		left:15em;
+		right:-15em;
+	}
+}
+
+@media (min-width:46em)
+{
+	#menubar
+	{
+		font-size:1em;
+	}
+	
+	h1 {
+		text-align: left;
+		max-width:600px;
+		margin:0 auto;
+		padding:0px 3em;
+	}
+	
+	a[href="#search"] {
+		display:none;
+	}
+	
+	#search {
+		position:absolute;
+		right:5%;
+		top:1em;
+		width:300px;
+	}
+	
+	.message
+	{
+		margin: 3.31em auto -3.31em auto;
+	}
+	
+	.dialog
+	{
+		margin: 0 auto;
+	}
+	
+	.dialog > *:first-child
+	{
+		margin: 3.31em 0 0;
+	}
+	
+	#mail a {
+		font-size:1em;
+		padding:0;
+		height: 1.7em;
+	}
+	
+	#mail a span {
+		background-color:inherit;
+	}
+	
+	#mail a span:nth-child(2) {
+		width:22%;
+		position:static;
+		font-size:1em;
+	}
+	
+	#mail a span:nth-child(3) {
+		width:54%;
+	}
+	
+	#mail a span:nth-child(4) {
+		max-width:22%;
+		position:absolute;
+		right:0px;
+		font-size:1em;
+	}
+	
+	#login > div,
+	#login > ul,
+	#intro div,
+	#intro ul {
+		margin:3.24em 0 0;
+		clear:none;
+		float: left;
+		width: 48%;
+	}
+}
+
+@media (min-width:60em)
+{
+	#search {
+		right:15%;
+	}
+}

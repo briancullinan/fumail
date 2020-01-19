@@ -1,0 +1,115 @@
+/* CSS Document */
+
+.dialog {
+	width:100%;
+	min-height:100%;
+	left:0;
+	top:0;
+	background-color:#fff;
+	z-index:1001;
+	text-align:left;
+	padding-top: 94px;
+	margin-bottom:-94px;
+}
+
+.dialog .nav {
+	text-align:center;
+}
+
+.dialog .scroll {
+	border-style:solid;
+	border-color:#ddd;
+	border-width:0px 0px 1px 3px;
+}
+
+#login .fancy,
+#keys .fancy
+{
+	width:100%;
+}
+
+#keys .fancy textarea
+{
+	height: 250px;
+	resize: none;
+}
+
+#keys .fancy td:first-child
+{
+	width:168px;
+}
+
+#keys .fancy td:nth-child(2)
+{
+	padding:0px;
+}
+
+#keys .fancy td:first-child {
+	padding:0px;
+	background:#ffffff;
+	vertical-align:top;
+}
+
+#keys .keys {
+	overflow:auto;
+	width:168px;
+	height:263px;
+}
+
+#keys .keys ul 
+{
+    list-style-image: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#keys .keys a {
+	padding: 5px 10px;
+	text-decoration:none;
+	border-radius: 1px;
+	display:inline-block;
+	width:100%;
+	color:#333;
+	outline:none;
+	white-space:nowrap;
+	position:relative;
+	border-left:3px solid #FFF;
+	border-bottom:1px solid #FFF;;
+}
+
+#keys .keys li {
+}
+
+#keys .keys a:hover {
+	background-color:#ddd;
+}
+
+#keys .keys a:focus {
+	color:#33AABB;
+	font-weight:bold;
+	border-color:#33AABB;
+}
+
+#keys .keys a.selected {
+	color:#FF8800;
+	font-weight:bold;
+	border-color:#FF8800;
+}
+
+#keys th:nth-child(3), 
+#keys td:nth-child(3)
+{
+	display:none;
+}
+
+#login table.fancy tr td:first-child {
+	background-color:#fff;
+}
+
+#login iframe {
+	border:0px;
+}
+
+
+

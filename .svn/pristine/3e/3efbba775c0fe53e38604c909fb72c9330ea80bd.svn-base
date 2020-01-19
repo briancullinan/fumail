@@ -1,0 +1,63 @@
+<?php include_once 'config.php'; ?>
+<div class="dialog" id="settings" style="height:500px; margin-top:-250px;">
+<h1>Security settings</h1>
+<h3>3 simple steps: <a href="#signup" class='little-btn' style="background-color:#666;">Basic information</a> <a href="#settings" class='little-btn' style="background-color:#777;">Security settings</a> <a href="#create" class='little-btn' style="background-color:#888;">Backup key</a></h3>
+<p>These can be changed at any time after your account is set up.  If you aren't sure, just click &ldquo;Next&rdquo;.</p>
+<div style="overflow:auto; height:300px;">
+<table class="fancy">
+<thead>
+<tr>
+<th>Feature</th>
+<th>Options</th>
+<th>Decription</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keep track of my public keys</td>
+<td><select name="manager">
+<option value="1">Use the contact manager</option>
+<option value="0">Don't use contact manager</option>
+</select></td>
+<td>Easily keep in touch with your secure friends.</td>
+</tr>
+<tr>
+<td>Cache encrypted e-mails only</td>
+<td><select name="cache">
+<option value="1">Use our servers</option>
+<option value="0">Local only</option>
+</select></td>
+<td>E-mails sent using the service are stored on our server faster loading.  They are encrypted even to us!</td>
+</tr>
+<tr>
+<td>Use search terms to find e-mails</td>
+<td><select name="terms">
+<option value="2">Lots of terms</option>
+<option value="1">Only a few terms</option>
+<option value="0">No terms</option>
+</select></td>
+<td>Terms are used to categorize and find e-mails quickly.</td>
+</tr>
+<tr>
+<td>Import your contacts</td>
+<td><a href="#" class="little-btn" style="background-color:#03C;">Google</a></td>
+<td>Connect to your Google account and syncronize your contacts.</td>
+</tr>
+<tr>
+<td>Connect to another e-mail account</td>
+<td>
+E-Mail address:<input type="text" id="altemail" /><br />
+Password: <input type="password" id="altpass" />
+</td>
+<td>Use an existing e-mail account to send encrypted mail.  Log in here to view it.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<?php if($_SESSION['user']) { ?>
+<p style="text-align:center;"><a href="#mail" class="intro-btn" style="background-color:#FF8800;">Cancel</a>
+<a href="#settings-save" class="intro-btn" style="background-color:#33AABB;">Save</a></p>
+<?php } else { ?>
+<p style="text-align:center;"><a href="#intro" class="intro-btn" style="background-color:#FF8800;">Home</a><a href="#settings-save" class="intro-btn" style="background-color:#33AABB;">Next</a></p>
+<?php } ?>
+</div>

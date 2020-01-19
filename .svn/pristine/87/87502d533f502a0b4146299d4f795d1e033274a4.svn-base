@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+<script type="text/javascript">
+
+	// check for a code, if there is one, add the account to the accounts list
+	var params = {}, 
+		queryString = window.location.hash.substring(1),
+		regex = /([^&=]+)=([^&]*)/g, m;
+	while (m = regex.exec(queryString)) {
+		params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+	}
+	
+	if(typeof params['state'] != 'undefined')
+		window.parent[params['state']].call(this, params);
+	// TODO: insert error handling here, maybe just call some google.js function
+
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?php include_once 'config.php'; ?>
+<div class="dialog" id="intro">
+<table class="nosey" style="width:100%;">
+<tr>
+<td style="width:80px; text-align:left;"><h2>Tired of </h2></td>
+<td class="list" style="width:80px; text-align:center;">
+<h2>NSA</h2>
+<h2>CIA</h2>
+<h2>Google</h2>
+<h2>FBI</h2>
+<h2>MI6</h2>
+</td>
+<td style="text-align:left;"><h2> reading your e-mail?</h2></td>
+<td style="width:100px;"><h2><img src="/foodog.jpg" alt="" style="float:left;" />FuMail</h2></td>
+</tr>
+</table>
+<h1>Introducing the world's first web-based end-to-end e-mail encryption system.</h1>
+<p style="text-align:center;"><a href="#how" class="intro-btn" style="background-color:#FF8800;">Learn more</a><a href="#signup" class="intro-btn" style="background-color:#33AABB;">Sign up</a><a href="#login" class="intro-btn" style="background-color:#336688;">Log in</a></p>
+</div>

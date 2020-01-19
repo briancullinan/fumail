@@ -1,0 +1,553 @@
+// JavaScript Document
+
+var dialog = null;
+var master = null;
+var accounts = null;
+var show_count = 100; // setting within browser for paging
+var firstLoad = true;
+var returnPath = '';
+
+function checkHash() 
+{
+	if(window.location.hash == dialog)
+		return;
+		
+	dialog = window.location.hash;
+	var path = dialog.split('#')[1];
+	var uid = dialog.split('#')[2];
+
+	// drag and drop area
+	var holder = document.getElementById('mail');
+	// holder.ondragover = function () { this.className = 'hover'; return false; };
+	// holder.ondragend = function () { this.className = ''; return false; };
+	holder.ondragover = function () { 
+		$('.compose iframe').each(function () {
+			$(this).contents().find('body').addClass('dragging');
+		});
+		return false; 
+	};
+	holder.ondragend = function () { 
+			$('.compose iframe').each(function () {
+			$(this).contents().find('body').addClass('dragging');
+		});
+		return false;
+	};
+	
+	holder.ondrop = function(e) {
+		// this.className = '';
+		e.preventDefault();
+		
+		var files = e.dataTransfer.files;
+		for (var i = 0; i < files.length; i++) {
+			handleFileDrop(files[i]);
+		}
+	};
+	
+	// if its emtpy show intro
+	if(dialog == '')
+	{
+		$('.dialog').hide();
+		$('#overlay').show();
+		$('#intro').show();
+		return;
+	}
+	// if it's mail, hide all dialogs and overlay
+	else if (dialog == '#mail')
+	{
+		$('#overlay').hide();
+		$('.dialog').hide();
+		if(accounts == null)
+			// decrypt local account information
+			decryptAccounts();
+		loadMail(accounts);
+		return;
+	}
+	// try to match has to known dialog
+	else if(dialog == '#intro' || dialog == '#signup' ||
+		dialog == '#how' || dialog == '#settings' || dialog == '#login' ||
+		dialog == '#reset' || dialog == '#create')
+	{
+		$('.dialog').hide();
+		$('#overlay').show();
+		$(dialog).show();
+		return;
+	}
+	// maybe the input is a folder
+	if((folder = $('#folders a[href="#' + path + '"]')).length > 0)
+	{
+		// only do this if it is not selected, maybe just the message id changed, handled below
+		if(!folder.is('.selected'))
+		{
+			var last = $('#folders .selected').removeClass('selected').find('~ ul');
+			if(!folder.parents('ul').is(last))
+				last.removeClass('expand');
+			folder.addClass('selected');
+			var offset = folder.offset();
+			$('#folders').animate({
+				scrollTop: offset.top - $('#folders').offset().top
+			});
+			
+			// this is the first time the page loads to skip it
+			if (firstLoad)
+				firstLoad = false;
+			// is the link referring to an exact message
+			else
+				loadMail(accounts, '#' + path);
+				
+			if(typeof uid != 'undefined' && 
+				(message = $('#list a[href="#' + path + '#' + uid + '"]')).length > 0)
+			{
+				$('#list .selected').removeClass('selected');
+				message.parents('tr').addClass('selected');
+				var offset = message.offset();
+				$('#list').animate({
+					scrollTop: offset.top - $('#list').offset().top
+				});
+			}
+		}
+	}
+	
+	// we may be loading a message
+	// let the server notify us if no message exists
+	//   validation of hash is done server side
+	if(typeof uid != 'undefined')
+	{
+		loadMessage(accounts, '#' + path, uid);
+	}
+}
+
+function setBindings(scope)
+{
+	if(scope == null)
+		scope = $('body');
+		
+	scope.find('a[href="#how"]').click(function (evt) {
+	});
+	
+	scope.find('a[href="#signup"]').click(function (evt) {
+	});
+	
+	scope.find('a[href="#login"]').click(function (evt) {
+	});
+	
+	scope.find('a[href="#reset"]').click(function (evt) {
+	});
+	
+	scope.find('a[href="#intro"]').click(function (evt) {
+	});
+	
+	scope.find('a[href="#create"]').click(function (evt) {
+	});
+	
+	scope.find('a[href="#max-message"]').click(maxMessage);
+	
+	scope.find('a[href="#close-message"]').click(closeMessage);
+	
+	scope.find('a[href="#settings"]').click(function (evt) {
+		$.get('/settings.php', {}, function (data) {
+			var content = $(data).children();
+			setBindings(content);
+			$('#settings').append(content);
+			$('#altemail').val(accounts.user);
+			$('#altpass').val(accounts.pass);
+		});
+		$('#settings').empty();
+	});
+	
+	scope.find('a[href="#signup-next"]').click(function (evt) {
+		evt.preventDefault();
+		master = $('#password').val();
+		$.post('/signup.php', {
+			username:$('#username').val(),
+			password:$('#password').val(),
+			'confirm':$('#confirm').val(),
+			'reset':$('#resetkey').val(),
+			email:$('#email').val(),
+			phone:$('#phone').val()
+		}, function (data) {
+			if(data == 'success')
+			{
+				// save password for comparison
+				window.location.hash = '#settings';
+				$('a[href="#settings"]').first().click();
+			}
+			var content = $(data).children();
+			setBindings(content);
+			$('#signup').append(content);
+		})
+		.fail(function (data) {
+			alert('An error occurred while processing the request.  Please try again later.');
+		});
+		$('#signup').empty();
+	});
+	
+	scope.find('a[href="#login-submit"]').click(function (evt) {
+		evt.preventDefault();
+		master = $('#pass').val();
+		if($('#stayin').val() == 'on')
+			// save the password to the session key in session
+			sessionStorage[$.cookie('PHPSESSID') + 'password'] = master;
+		else
+			// could someone steal your master password?
+			sessionStorage[$.cookie('PHPSESSID') + 'password'] = null;
+		$.post('/login.php', {
+			username:$('#user').val(),
+			password:$('#pass').val(),
+			accounts:localStorage['accounts']
+		}, function (data)
+		{
+			window.location.hash = '#mail'; // causes dialog to hide
+			
+			var content = $(data).children();
+			setBindings(content);
+			$('#login').append(content);
+		})
+		.fail(function (data) {
+			master = null;
+			
+			var content = $(data).children();
+			setBindings(content);
+			$('#login').append(content);
+		});
+		$('#login').empty();
+	});
+	
+	scope.find('a[href="#reset-submit"]').click(function (evt) {
+		evt.preventDefault();
+		$.post('/reset.php', {
+			username:$('#reset-user').val(),
+			'reset':$('#reset-key').val()
+		}, function (data) {
+			var content = $(data).children();
+			setBindings(content);
+			$('#reset').append(content);
+		})
+		.fail(function (data) {
+			alert('An error occurred while processing the request.  Please try again later.');
+		});
+		$('#reset').empty();
+	});
+	
+	scope.find('a[href="#settings-save"]').click(function (evt) {
+		evt.preventDefault();
+		// encrypt account information
+		try {
+			var serialized = JSON.stringify({
+				user:$('#altemail').val(),
+				pass:$('#altpass').val()
+			});
+		
+			var result = CryptoJS.TripleDES.encrypt(serialized, master);
+			var encrypted = result.toString();
+			localStorage['accounts'] = encrypted;
+		} catch (e)
+		{
+			alert(e);
+		}
+		
+			//if(data == 'success')
+				window.location.hash = '#mail';
+	});
+}
+
+function closeMessage(evt)
+{
+	evt.preventDefault();
+	$(this).parents('.message').remove();
+}
+
+function maxMessage(evt)
+{
+	evt.preventDefault();
+	$(this).parents('.message').appendTo($('body'));
+	refreshLayout();
+}
+
+function refreshLayout()
+{
+	var iMsg = 0,
+		limit = Math.floor(($('body').width() - $('#folders').width()) / 610),
+		msgCount = $('.message').length;
+	// start from most recent message and collapse
+	$($('.message').get().reverse()).each(function () {
+		var msg = $(this);
+		if(iMsg >= limit)
+		{
+			msg.addClass('collapsed');
+			msg.css('right', 0);
+			msg.css('bottom', (iMsg - limit) * 46);
+		}
+		else
+		{
+			var left = Math.min(msgCount, limit) - iMsg - 1;
+			msg.removeClass('collapsed');
+			msg.css('right', left * 610 + 
+				// add width of collapsed
+				(msgCount > limit ? 210 : 0));
+			msg.css('bottom', 0);
+		}
+		iMsg++;
+	});
+}
+
+function messageSuccess(data)
+{
+	try
+	{
+		var result = typeof data == 'object' ? data : JSON.parse(data);
+		var newMessage = '<table class="message">' +
+	'    <thead>' + 
+	'        <tr><th><a href="#{link}"><span>{from}</span>{subject}</a></th><th><a style="margin:0px; float:right; padding:0px; background-color:#33AABB;" class="little-btn" href="#close-message"><span class="close">&nbsp;</span></a></th></tr>' + 
+	'        <tr><th colspan="2">From: {fromfull}<br />Date: {date}<br />To: {to}</th></tr>' + 
+	'        <tr><th colspan="2">{subject}</th></tr>' + 
+	'    </thead>' + 
+	'    <tbody>' + 
+	'        <tr>' + 
+	// get a blank html page with no logic to fill in with our values
+	'        <td colspan="2"><iframe src="/mail.php" /></td>' + 
+	'        </tr>' + 
+	'    </tbody>' + 
+	'</table>';
+		newMessage = newMessage.replace(/\{from\}/ig, result.headers.from.replace(/<.*?>$/, ''))
+							   .replace(/\{fromfull\}/ig, result.headers.from)
+							   .replace(/\{subject\}/ig, result.headers.subject)
+							   .replace(/\{date\}/ig, result.headers.date)
+							   .replace(/\{to\}/ig, result.headers.to)
+							   .replace(/\{link\}/ig, data.user + '@' + data.host + '#' + data.headers.msgno);
+		newMessage = $(newMessage).appendTo($('body'));
+		setBindings(newMessage);
+		refreshLayout();
+		// add body to iframe
+		var frame = newMessage.find('iframe');
+		// clean up the email data
+		var attachments = parseMultipart(result);
+		refreshBody(frame.contents(), frame, attachments);
+	}
+	catch (e)
+	{
+		alert(e);
+	}
+}
+
+function refreshBody(doc, frame, attachments)
+{
+	// only make view decisions here, nothing to do with data structure
+	if(typeof frame == 'undefined')
+		$('.message iframe').each(function ()
+		{
+			if($(this).contents()[0] == doc[0])
+				frame = $(this);
+		});
+	
+	var shouldMerge = true;
+	if(typeof attachments == 'undefined')
+	{
+		shouldMerge = false;
+		attachments = frame.data('body');
+	}
+	
+	for(var i in attachments)
+	{
+		if(attachments[i]['headers']['content-type'] == 'pgp/mime')
+		{
+			// notify users that they have received and encrypted message
+		}
+		if(attachments[i]['headers']['content-type'] == 'text/plain')
+		{
+			// wrap in a pre tag
+			doc.find('body').append('<div class="part"><pre style="white-space:pre-wrap;">' + attachments[i].body + '</pre></div>');
+			frame.parents('table').find('thead').append('<tr class="type"><th colspan="2">' + attachments[i].headers['subtype'] + '</td></tr>');
+		}
+		else
+			doc.find('body').append('<div class="part">' + attachments[i].body + '</div>');
+			frame.parents('table').find('thead').append('<tr class="type"><th colspan="2">' + attachments[i].headers['subtype'] + '</td></tr>');
+	}
+	
+	if(shouldMerge)
+	{
+		var otherAttachments = frame.data('body')
+		for(var a in otherAttachments)
+			attachments.push(otherAttachments[a]);
+	}
+	
+	// add previous attachments
+	frame.data('body', attachments)
+}
+
+// called whenever the page is first loaded and we need to
+//   list the mail folders and headers for the selected folder
+function mailSuccess(data)
+{
+	try
+	{
+		var result = typeof data == 'object' ? data : JSON.parse(data);
+		var folders = $('#folders');
+		// don't add accountRoot again if it is already in the list
+		var accountRoot = folders.find('> li > a[href="#' + result.user + '@' + result.host + '"]');
+		if(accountRoot.length == 0) 
+		{
+			accountRoot = $('<li><a href="#' + result.user + '@' + result.host + '">' + result.user + '@' + result.host + '</a><ul class="expand"></ul></li>')
+			.appendTo(folders);
+			accountRoot.find('> a')
+			.click(function () {
+				// uncomment to allow accountRoot to be minimized
+				//$(this).siblings('ul').toggleClass('expand');
+			});
+		}
+		
+		// reload the folders from account
+		if(typeof result.folders != 'undefined' && result.folders != null)
+			loadFolders(result, accountRoot, result.folders);
+			
+		// process mailbox info
+		var fString = result.user + '@' + result.host;
+		fString += result.info.Mailbox.replace(/\{.*?\}(INBOX)*/i, '')
+		var fLink = $('#folders a[href="#' + fString + '"]');
+		fLink.html(fLink.html().replace(/\s*\([0-9]*\)$/i, '') + ' (' + result.info.Unread + ')');
+		
+		// this is the first time to page is loaded
+		if(firstLoad && returnPath != '' && returnPath != '#login' && returnPath != '#mail')
+		{
+			accountRoot.find('> a').trigger('click');
+			window.location.hash = returnPath;
+		}
+		else if(firstLoad)
+			window.location.hash = accountRoot.find('> a').trigger('click').attr('href');
+		
+		// load the headers in to the message list
+		loadHeaders(result, accountRoot, result.headers);
+	}
+	catch (e)
+	{
+		alert(e);
+	}
+}
+
+function loadMessage(account, path, uid)
+{
+	try
+	{
+		if(typeof path != 'undefined')
+			path = path.replace(/^#/, '');
+		if(typeof uid != 'undefined')
+			uid = uid.replace(/^#/, '');
+			
+		$.post('/mail.php', {
+			user:account.user,
+			pass:account.pass,
+			path:path,
+			uid: uid
+		}, function (data) {
+			messageSuccess(data);
+		});
+	}
+	catch (e)
+	{
+		alert(e);
+	}
+}
+
+function loadMail(account, path, successAction)
+{
+	try
+	{
+		if(typeof path != 'undefined')
+			path = path.replace(/^#/, '');
+		// connect to mailbox and download folders and first 100 messages
+		$.post('/mail.php', {
+			user:account.user,
+			pass:account.pass,
+			path:path
+		}, function (data) {
+			mailSuccess(data);
+			if(typeof successAction != 'undefined')
+				successAction();
+		});
+	}
+	catch (e)
+	{
+		alert(e);
+	}
+}
+
+function decryptAccounts()
+{
+	var encrypted = localStorage['accounts'];
+	var result = CryptoJS.TripleDES.decrypt(encrypted, master);
+	var hex = result.toString();
+	var decrypted = hex2a(hex);
+	accounts = JSON.parse(decrypted);
+}
+
+function loadFolders(result, accountRoot, folders)
+{
+	folders.sort(function (a, b) {
+		return a.toLowerCase().localeCompare(b.toLowerCase());
+	});
+	
+	for(var i in folders)
+	{
+		// modify the result a little
+		var name = folders[i].replace(result.connect, '') // remove connect string
+							 .replace(/^INBOX\.*/, '');      // remove extra INBOX indication
+		if(name == '')
+			continue;
+		// split by dot to create folder trees
+		var subfolders = name.split('.');
+		var current = accountRoot.children('ul');
+		var fString = result.user + '@' + result.host;
+		for(var j in subfolders)
+		{
+			fString += '.' + subfolders[j];
+			var temp = current.find('> li > a[href="#' + fString + '"]').parent();
+			if(temp.length == 0)
+			{
+				temp = $('<li><a href="#' + fString + '">' + subfolders[j] + '</a><ul></ul></li>')
+				.appendTo(current);
+				temp.find('> a')
+				.click(function () {
+					$(this).siblings('ul').toggleClass('expand');
+				});
+			}
+			current = temp.children('ul');
+		}
+	}
+}
+
+function loadHeaders(result, accountRoot, headers)
+{
+	$('#list tbody tr').remove();
+	for(var header in headers)
+	{
+		if(!headers[header]) // skip messages that disappeared
+			continue;
+		if(typeof headers[header] == 'object')
+		{
+			var obj = headers[header];
+			
+			if(typeof obj.fromaddress == 'undefined')
+				obj.fromaddress = '';
+			else if(obj.fromaddress.substring(0, 15) == '=?iso-8859-1?B?')
+				obj.fromaddress = CryptoJS.enc.Base64.parse(obj.fromaddress.substring(15)).toString(CryptoJS.enc.Latin1);
+			//else if(obj.fromaddress.substring(0, 10) == '=?utf-8?Q?')
+			//	obj.fromaddress = CryptoJS.enc.Base64.parse(obj.fromaddress.substring(15)).toString(CryptoJS.enc.Latin1);
+			
+			if(typeof obj.subject == 'undefined')
+				obj.subject = '';
+			else if(obj.subject.substring(0, 15) == '=?iso-8859-1?B?')
+				obj.subject = CryptoJS.enc.Base64.parse(obj.subject.substring(15)).toString(CryptoJS.enc.Latin1);
+			
+			var fString = '#' + result.user + '@' + result.host;
+			fString += result.info.Mailbox.replace(/\{.*?\}(INBOX)*/i, '');
+			fString += '#' + obj.Msgno.trim();
+			var newRow = $('<tr><td><a href="' + fString + '">&nbsp;</a></td>' + 
+				'<td><a href="' + fString + '">' + obj.fromaddress + '</a></td>' +
+				'<td><a href="' + fString + '">' + obj.subject + '</a></td>' +
+				'<td><a href="' + fString + '">' + obj.Date + '</a></td>' + 
+			'</tr>').appendTo($('#list tbody'));
+			
+			if(obj.Unseen == 'U')
+				newRow.addClass('unseen');
+		}
+	}
+}

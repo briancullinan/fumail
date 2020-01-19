@@ -1,0 +1,162 @@
+// JavaScript Document
+
+var clientId = '61143827920-ok9rpqcq25phtggfrhaogkmlm8sed83d.apps.googleusercontent.com';
+var scopes = 'https://mail.google.com/ https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar';
+var googleContacts = null;
+
+// Is there an easier way to do this?
+//   jsonp doesn't work because we can't read the hash from the response script
+function doGoogleLogin(immediate, state) 
+{
+	if(typeof immediate == 'undefined')
+		immediate = false;
+	if(typeof state == 'undefined')
+		state = 'getGoogleUser';
+	else
+	{
+		// set up callback to call getGoogleUser first then call callback
+		var callback = state;
+		state = 'fumail_' + CryptoJS.lib.WordArray.random(16);
+		window[state] = function (params) {
+			try {
+				// pass in callback to do this after we get user information
+				getGoogleUser(params, callback);
+			}
+			catch (e)
+			{
+				if(console)
+					console.log(e);
+			}
+			window[state] = null;
+		};
+	}
+	
+	// request new google token
+	// try a get first
+	var token_request = 'https://accounts.google.com/o/oauth2/auth' + 
+		'?redirect_uri=https://fumail.me' + (immediate ? '/google.php' : '') + 
+		'&approval_prompt=auto' +
+		'&client_id=' + clientId +
+		(immediate ? '&immediate=true' : '') + 
+		'&response_type=token' +
+		'&state=' + state +
+		'&scope=' + scopes;
+	if(immediate)
+	{
+		var googleFrame = $('#google-load');
+		if(googleFrame.length == 0)
+			$('<iframe width="0" height="0" id="#google-load" src="' + token_request + '"></iframe>').appendTo('#login');
+		else
+			googleFrame.attr('src', token_request);
+	}
+	else
+		window.location = token_request;
+};
+
+function getGoogleSuccess(data, params, callback)
+{
+	if(console)
+		console.log(data);
+	var account = {
+			user: data.email, 
+			access: params['access_token'], 
+			expires: new Date().getTime() + (parseInt(params['expires_in']) * 1000)
+		};
+	
+	if(typeof callback == 'undefined')
+		window.location.hash = '#mail';
+	// do this after user info is loaded
+	// store the accounts for the session
+	else if(typeof callback == 'string' &&
+		typeof window[callback] != 'undefined')
+		window[callback].call(this, account);
+	else
+		callback.call(this, account);
+		
+}
+
+function loadGoogleContacts(account)
+{
+	// load contacts inside a worker
+	if(googleContacts == null)
+	{
+		googleContacts = $.Hive.create({
+			worker: '/worker.google.js',
+			receive: getContactsSuccess,
+			created: function ($hive) {
+				$( $hive ).send(account);
+			}
+		});
+	}
+	else
+		$(googleContacts).send(account);
+}
+
+function sortContacts(a, b)
+{
+	var aTitle = $(a).find('title').text(),
+		aSort = aTitle != '' ? aTitle : $(a).find('gd\\:email').first().attr('address'),
+		bTitle = $(b).find('title').text(),
+		bSort = bTitle != '' ? bTitle : $(b).find('gd\\:email').first().attr('address');
+	return aSort.toLowerCase().localeCompare(bSort.toLowerCase());
+}
+
+function getContactsSuccess(response)
+{
+	if(typeof response.text == 'string')
+	{
+		var data = $(response.text);
+		var contacts = $('#contacts');
+		data.find('entry').sort(sortContacts).each(function () {
+			var that = $(this),
+				id = that.find('id').text(),
+				title = that.find('title').text(),
+				contact = contacts.find('a[href="#' + id + '"]'),
+				email = that.find('gd\\:email').first().attr('address');
+			if(contact.length == 0)
+			{
+				contact = $('<li><a href="#' + id + '">' + (title != '' ? title : email) + '</a></li>');
+				// sort just the new element
+				var hit = false;
+				contacts.find('li').each(function () {
+					if($(this).text().toLowerCase().localeCompare(contact.text().toLowerCase()) > 0)
+					{
+						contact.insertBefore($(this));
+						hit = true;
+						return false;
+					}
+				});
+				if(!hit)
+					contacts.append(contact);
+			}
+		});
+		
+		var next = data.find('link[rel="next"]');
+		if(next.length > 0)
+		{
+			var user = data.children('id').text(),
+				startMatch = new RegExp(/start-index=([0-9]+)/igm),
+				start = startMatch.exec(next.attr('href'));
+			// get next page of contacts
+			setTimeout(function () {
+				loadGoogleContacts({
+					user: response.account.user, 
+					access: response.account.access, 
+					start: parseInt(start[1])
+				});
+			}, 100);
+		}
+	}
+	
+}
+
+function getGoogleUser(params, callback)
+{
+	// try to request username
+	$.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+		'alt' : 'json',
+		'access_token' : params['access_token']
+	}, function (data) {
+		getGoogleSuccess(data, params, callback);
+	});
+}

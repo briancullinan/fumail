@@ -1,0 +1,99 @@
+
+importScripts('/jquery.hive.pollen.js');
+
+$(function (data) {
+	$.send('Importing scripts');
+	// openPGP uses this for some reason, there's NO DOM!
+	$.text = function (data) {
+		return {html: function ()
+			{
+				return data;
+			}
+		}
+	};
+	
+	// fix for openpgp errors
+	window = {
+		// Can't use local storage in Web Worker, we have to import them
+		localStorage: {
+			getItem: function (name) { 
+				return typeof localStorage[name] == 'undefined' 
+					? null 
+					: localStorage[name]; },
+			setItem: function (name, value) { localStorage[name] = value; }
+		}
+	};
+	
+	var localStorage = {};
+	
+	try {
+		importScripts('/rollups/sha1.js');
+		importScripts('/rollups/tripledes.js');
+		importScripts('/openpgp.js');
+		openpgp.init();
+		$.send('Done importing');
+
+		$.send('Encrypting...');
+				
+		// do the encryption
+		var encBoundary = '----fumail' + CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex),
+			// wrap message in PGP/MIME, do we want to do this or inline?  This may has compatibility issues as not all clients support it
+			message = 'Content-Type: multipart/mixed; boundary="' + encBoundary + '"\r\n' +
+				'\r\n' + 
+				'--' + encBoundary + '\r\n' +
+				'Content-Type: text/html; charset=ISO-8859-1\r\n' + 
+				'Content-Transfer-Encoding: quoted-printable\r\n' +
+				'\r\n' + 
+				'<html><body>\r\n' + 
+				data.message +
+				'</body></html>\r\n' + 
+				'\r\n\r\n' + 
+				'--' + encBoundary + '--',
+			encrypted = openpgp.write_signed_and_encrypted_message(data.privateKey, data.publicKeys, message);
+		
+		// create mail message
+		var boundary = '----fumail' + CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex),
+			envelope = 'From: <' + data.from + '>\r\n' +
+			'To: <' + data.recipients.join('>,<') + '>\r\n' +
+			'Subject: ' + data.subject + '\r\n' +
+			'MIME-Version: 1.0\r\n' + 
+			'User-Agent: FuMail version-1.0\r\n' + 
+			'Content-Type: multipart/encrypted; protocol="application/pgp-encrypted";\r\n' + 
+			'	boundary="' + boundary + '"\r\n' + 
+			'\r\n' + 
+			'--' + boundary + '\r\n' + 
+			'Content-Type: application/pgp-encrypted\r\n' + 
+			'Content-Description: PGP/MIME version identification\r\n' +
+			'\r\n' +
+			'Version: 1\r\n' +
+			'\r\n' + 
+			'--' + boundary + '\r\n' +
+			'Content-Type: application/octet-stream; name="encrypted.asc"\r\n' + 
+			'Content-Description: FuMail encrypted message\r\n' + 
+			'Content-Disposition: inline; filename="encrypted.asc"\r\n' + 
+			'\r\n' + 
+			encrypted + '\r\n' +
+			'\r\n' + 
+			'--' + boundary + '--';
+			
+		$.send('Sending...');
+		// send message to server for relay
+		$.post('/send.php', {
+			'path' : from,
+			'to': data.recipients.join('>,<'),
+			'mail': envelope
+		}, function (response) {
+			// TODO: handle errors gracefully
+			if(console)
+				console.log(response);
+		}).fail(function (response) {
+			if(console)
+				console.log(response);
+		});
+		
+	}
+	catch (e)
+	{
+		showMessages('' + e + e.stack);
+	}
+});

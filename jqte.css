@@ -1,0 +1,204 @@
+@import url("/jquery-te-1.4.0.css");
+
+.jqte_tool.jqte_tool_1
+{
+    padding:2px;
+}
+
+.jqte_tool.jqte_tool_1 .jqte_tool_icon
+{
+    background: url("jquery-te.png") no-repeat scroll -6px -23px transparent;
+    height:6px;
+    width:9px;
+}
+
+.jqte_tool.jqte_tool_1 .jqte_tool_text, .jqte_linktypes a
+{
+    color: inherit;
+}
+
+.jqte *, .jqte_tool.jqte_tool_1 .jqte_tool_text, .jqte_linktypes a, .jqte_titleText
+{
+    font-family:'Open Sans',Helvetica,sans-serif;
+    font-weight: inherit;
+    font-size:inherit;
+}
+
+.jqte_tool, .jqte_tool_icon, .jqte_tool_label, .jqte_tool_text
+{
+    font-family:'Open Sans',Helvetica,sans-serif;
+    font-size:1.05em;
+    font-weight: 300;
+    font-style:normal;
+    color: inherit;
+}
+
+.jqte_editor h1
+{
+    max-width:none;
+    padding:0;
+    margin:0;
+}
+
+.jqte_editor h1[align="left"]
+{
+    text-align:left;
+}
+
+.jqte_editor h1[align="right"]
+{
+    text-align:right;
+}
+
+.jqte_editor h1[align="center"]
+{
+    text-align:center;
+}
+
+.jqte_tool, .jqte_linkbutton
+{
+    padding:5px;
+    margin:0px;
+    background-image:url("/overlay.png");
+    background-repeat:repeat-x;
+    background-position:0% 0%;
+    border-radius:2px;
+    background-color: #eeeeee;
+    color: inherit;
+    border:1px solid #EEEEEE;
+    border-radius: 2px;
+}
+
+.jqte_linkinput
+{
+    width:100%;
+    max-width:300px;
+}
+
+.jqte_tool:hover, .jqte_linkbutton:hover
+{
+    background-color: #dddddd;
+    background-position:50% 50%;
+    border-color: #BBBB33;
+    box-shadow: none;
+}
+
+.jqte_tool .jqte_tool_icon,
+.jqte_tool .jqte_tool_label
+{
+    border:none !important;
+}
+
+.jqte_linkform
+{
+    padding:1px;
+    border-color: #BB66BB;
+    border-style: solid;
+    border-width: 0 0 1px 3px;
+    width:100%;
+}
+
+.jqte_linktypeselect
+{
+    width:auto;
+}
+
+.jqte_linktypeview
+{
+    padding:5px 15px 5px 5px !important;
+}
+
+.jqte_linktypearrow
+{
+    top:40%;
+}
+
+.jqte_tool.jqte_tool_1 .jqte_tool_label
+{
+    height:auto;
+    width:auto;
+    padding: 0px 15px 0px 0px;
+}
+
+.jqte_linkbutton
+{
+    margin:0px 5px !important;
+}
+
+.jqte_linktypes
+{
+    width:auto;
+    white-space:nowrap;
+}
+
+.jqte_fontsizes
+{
+    height:auto;
+}
+
+.jqte_placeholder_text
+{
+    color: #777777;
+    padding: 5px 5px 5px 8px;
+    top: 0;
+    left: 0;
+}
+
+.compose .jqte {
+    margin:0px !important;
+    box-shadow:none !important;
+    border-radius:0px;
+    position:relative;
+    border:0px !important;
+    clear:both;
+    overflow:hidden;
+}
+
+.compose .jqte.checked .jqte_toolbar {
+    display:block;
+}
+
+.compose .jqte_focused {
+    outline: medium none !important;
+}
+
+.compose .jqte_focused .jqte_editor
+{
+    box-shadow: none !important;
+    border-color:#33AABB;
+}
+
+.compose .jqte_toolbar {
+    display:none;
+    border-color: #BBBB33;
+    border-style: solid;
+    border-width: 0px 0px 1px 3px;
+    padding:1px;
+    width:100%;
+}
+
+.compose .jqte_tool_20,
+.compose .jqte_tool_21
+{
+    display:none;
+}
+
+.jqte .sticky-wrapper
+{
+    height:auto !important;
+}
+
+.compose .jqte_editor {
+    padding:5px;
+    resize:none;
+    border-width:0 0 1px 3px;
+    border-style:solid;
+    border-color:#DDD;
+    max-height:none;
+    min-height:inherit;
+}
+
+.jqte.checked .jqte_placeholder
+{
+    display:none !important;
+}

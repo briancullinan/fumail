@@ -1,0 +1,287 @@
+/* CSS Document */
+
+
+.intro-btn:hover,
+.little-btn:hover
+{
+	text-decoration:underline;
+	background-position:50% 50%;
+}
+
+.little-btn span {
+	min-height:19px;
+}
+
+.intro-btn span,
+.little-btn span
+{
+	display:block;
+}
+
+.intro-btn:hover span,
+.little-btn:hover span
+{
+}
+
+.intro-btn, .little-btn
+{
+	font-size:2em;
+	font-weight:300;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	color:#FFFFFF;
+	padding:0.1em 0.2em;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+	text-decoration:none;
+	border-radius: 1px;
+	margin:0.2em;
+	display:inline-block;
+	vertical-align:middle;
+	outline:none;
+	white-space:nowrap;
+}
+
+.little-btn
+{
+	font-size:1.5em;
+	font-weight:400;
+}
+
+#menu .settings
+{
+	background: url("/icons.png") no-repeat scroll 0px -472px transparent;
+	height:19px;
+	padding-left:24px;
+}
+
+.little-btn .close
+{
+	background: url("/icons2.png") no-repeat scroll 0px -373px transparent;
+}
+
+#menu .key
+{
+	background: url("/key.png") no-repeat scroll 0px 0px transparent;
+	height:19px;
+	padding-left:15px;
+}
+
+a[href="#attach"],
+a[href="#format"],
+a[href="#send"],
+a[href="#close-message"],
+a[href="#reply"],
+a[href="#reply-all"],
+a[href="#forward"]
+{
+	margin:0px 2px;
+	padding:0px;
+}
+
+a[href="#close-message"]
+{
+	background-color:#33AABB;
+}
+
+#paging a[href="#next"],
+#paging a[href="#back"]
+{
+	margin:0px;
+	padding:5px;
+	background-color:#777;
+}
+#paging .next,
+#paging .back
+{
+	width:19px;
+}
+
+#paging .next
+{
+	background: url("/icons.png") no-repeat scroll 0px -105px transparent;
+}
+
+#paging .back
+{
+	background: url("/icons.png") no-repeat scroll 0px -171px transparent;
+}
+
+a.imap,
+a[href="#mail"],
+a[href="#how"],
+a[href="#intro"]
+{
+	background-color:#666;
+}
+
+a[href="#encrypt"],
+a[href="#sign"]
+{
+	background-color:#777;
+}
+
+a[href="#backup-submit"],
+a[href="#reply"],
+a[href="#reply-all"],
+a[href="#forward"],
+a[href="#write"]
+{
+	background-color:#336688;
+}
+
+.message .reply,
+.message .reply-all,
+.message .forward,
+.message .attach,
+.message .close,
+.message .format
+{
+	width:24px;
+	height:24px;
+}
+
+.little-btn .google
+{
+	display:inline-block;
+	background: url("/icons4.png") no-repeat scroll -428px -600px transparent;
+	width:30px;
+	height:30px;
+}
+
+.message .reply-all
+{
+	background: url("/icons2i.png") no-repeat scroll 0px -22px transparent;
+}
+
+.message .reply
+{
+	background: url("/icons2i.png") no-repeat scroll 0px -190px transparent;
+}
+
+.message .forward
+{
+	background: url("/icons2i.png") no-repeat scroll 0px -478px transparent;
+}
+
+.pen
+{
+	height:19px;
+	padding-left:24px;
+	background: url("/pen.png") no-repeat scroll 0px 0px transparent;
+}
+
+.message .attach
+{
+	background: url("/icons3.png") no-repeat scroll 0px -40px transparent;
+}
+
+.message .format
+{
+	background: url("/icons3.png") no-repeat scroll 0px -64px transparent;
+}
+
+.message .send
+{
+	background: url("/icons2i.png") no-repeat scroll right -724px transparent;
+	padding:2px 24px 3px 10px;
+}
+
+a[href="#menu"],
+a[href="#keys"]
+{
+	background-color:#888;
+}
+
+#login-types a span
+{
+	color:#930;
+}
+
+a[href="#login-linkedin"],
+a[href="#login-twitter"],
+a[href="#login-facebook"],
+a[href="#login-yahoo"]
+{
+	opacity:.5;
+}
+
+a[href="#login-linkedin"]
+{
+	background-color:#BBAA00;
+}
+
+a[href="#login-other"]
+{
+	background-color:#333333;
+}
+
+a[href="#login-twitter"]
+{
+	background-color:#1199DD;
+}
+
+a[href="#login-facebook"],
+a[href="#login"]
+{
+	background-color:#336688;
+}
+
+a[href="#search"]
+{
+	display:inline-block;
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+a[href="#menu"]
+{
+	display:inline-block;
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+a[href="#import"],
+a[href="#sign"].checked,
+a[href="#search"],
+a[href="#create-key"]
+{
+	background-color:#33AABB;
+}
+
+a[href="#login-yahoo"]
+{
+	background-color:#990066;
+}
+
+a[href="#logout-submit"]
+{
+	background-color:#FF3311;
+}
+
+a.google,
+a[href="#login-google"]
+{
+	background-color:#03C;
+}
+
+a[href="#encrypt"],
+a[href="#sign"]
+{
+	margin: 1px;
+	padding: 4px 5px;
+}
+
+a[href="#encrypt"].checked
+{
+	background-color:#33AA99;
+}
+
+a[href="#format"].checked
+{
+	background-color:#BBBB33;
+}
+
+

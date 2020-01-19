@@ -1,0 +1,56 @@
+-- General
+Full screen message (thread display) by default, user tests show that may cause the user to close the open message instead of the window, their mouse will stop short, does this work on a Mac?
+Enter in the login fields should activate login button, simple key handler
+If the screen is smaller than a message, take up the full screen and provide navigation buttons
+Mobile, disable zooming with css, use iframe for navigation instead of div
+Handle smtp errors gracefully in send.php and worker.send.js
+Fix copying style attribute from parent jqte_editor in jqte.js
+Disguise public key generation and trust management as something simpler than it is now
+  Or use Enigmail interface and jQuery DataGrid
+FIX download to work with new callback scheme used in decrypt.
+	Downloading an attachment should show progress bar
+	In mail.php, get the structure of the email first, like imap_fetchstructure() but faster
+	In mail.js, parseMime should function normally and when it gets to a large body part it displays a download link
+Display message data from selected folder before loading body with callback, display loading symbol
+Handle errors from callbacks gracefully
+Compose mail, using drag and drop events to read file, get attachments working
+Colorize message replies like thunderbird does.
+Abstract by extending objects, a cross between jQuery and C# extension methods.
+	Each .php file can hosts its own javascript instead of nav.js doing most of the work
+Write a suite of unit tests for e-mail edge cases and poor formatting added by multiple relays
+Cache emails locally
+Implement a spam filter using spam bayes and signatures shared with the server.
+  When spam hits a certain threashold, there must be some amount of information that is safe to share
+Display an icon indicating trust levels along the left side of the emails
+Generate revocation certificates by default and notify users when they are revoked
+Implement search as you type using file database locally.
+  Perform a server search when you click the button or press ENTER key.
+Synchronize settings by encrypting using temporary key and 
+  uploading to server, it is deleted when client receives it
+  Just like Firefox, the keys are only known to the client
+Support signatures in text form and encrypted form, find how to do both but display it as one
+Does using a Worker for decryption have any problems with copying large files?
+Offer <name>@fumail.me email addresses.
+Use node.js and MongoDB to store e-mail data and cache email
+Use a server with lots of temporary memory and bandwidth to provide a proxy for email servers
+Build a social network on trust
+SMTP protocol should not fail after just entering a username, this allows brute force attacks to be narrowed (see OWASP),
+  propose specification update
+
+----------------------OAuth/OpenID---------------------------------
+Manage public keys and contacts
+Use OAuth to authenticate to services
+	Can we make every client an OAuth server?  FuMail server asks the client for permission to relay for/represent them, 
+		we receive a token from every user used to identify/track usage/pay yearly membership for the session
+Use OpenID instead
+Use public and private key to authenticate no need to store the password
+  When a user logs in, request a session from the server
+  The server encrypts with their public key, the client decrypts message with private key
+  The client sends message back to server to authenticate
+Integrate OAuth for syncing Gmail and contacts
+When private key is lost or stolen, clients can be deauthenticated, and even kill switched
+  This may align better with OpenID capabilities
+
+
+
+

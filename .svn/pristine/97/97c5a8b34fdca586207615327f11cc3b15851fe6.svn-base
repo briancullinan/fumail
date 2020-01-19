@@ -1,0 +1,20 @@
+<?php include_once 'config.php'; ?>
+<div class="dialog" id="create">
+<h1>Generate PGP key</h1>
+<h3>3 simple steps: <a href="#signup" class='little-btn' style="background-color:#666;">Basic information</a> <a href="#settings" class='little-btn' style="background-color:#777;">Security settings</a> <a href="#create" class='little-btn' style="background-color:#888;">Backup key</a></h3>
+<p>Your key pair tells other people who you are in a secure way.</p>
+<table class="fancy">
+<thead>
+<tr>
+<th>Click create below</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#" class="intro-btn" style="background-color:#33AABB;">Create</a><br />
+<p>Then click &ldquo;Backup&rdquo; and save your private key.</p></td>
+</tr>
+</tbody>
+</table>
+<p style="text-align:center;"><a href="#create-cancel" class="intro-btn" style="background-color:#FF8800;">Close</a><a href="#backup-submit" class="intro-btn" style="background-color:#33AABB;">Backup</a></p>
+</div>

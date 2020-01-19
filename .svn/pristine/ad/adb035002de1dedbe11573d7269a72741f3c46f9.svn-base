@@ -1,0 +1,125 @@
+/* CSS Document */
+
+.message
+{
+	margin:2.3em auto -2.3em auto;
+}
+
+.dialog
+{
+	margin: 0 auto;
+}
+	
+.dialog > *:first-child
+{
+	margin:2.5em 0 0;
+}
+
+.dialog
+{
+	text-align: left;
+	background-color:#fff;
+	max-width: 600px;
+	display:none;
+}
+
+.menu .dialog
+{
+}
+
+#login .fancy,
+#keys .fancy
+{
+	width:100%;
+}
+
+#keys .fancy textarea
+{
+	height: 250px;
+	resize: none;
+}
+
+#keys .fancy td:first-child
+{
+	width:168px;
+}
+
+#keys .fancy td:nth-child(2)
+{
+	padding:0px;
+}
+
+#keys .fancy td:first-child
+{
+	padding:0px;
+	background:#ffffff;
+	vertical-align:top;
+}
+
+#keys .keys {
+	overflow:auto;
+	width:168px;
+	height:263px;
+}
+
+#keys .keys ul 
+{
+    list-style-image: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#keys .keys a
+{
+	padding: 5px 10px;
+	text-decoration:none;
+	border-radius: 1px;
+	display:inline-block;
+	width:100%;
+	color:#333;
+	white-space:nowrap;
+	position:relative;
+	border-left:3px solid #FFF;
+	border-bottom:1px solid #FFF;;
+}
+
+#keys .keys li
+{
+}
+
+#keys .keys a:hover
+{
+	background-color:#ddd;
+}
+
+#keys .keys a:focus
+{
+	color:#33AABB;
+	font-weight:700;
+	border-color:#33AABB;
+}
+
+#keys .keys a.selected
+{
+	color:#FF8800;
+	font-weight:700;
+	border-color:#FF8800;
+}
+
+#keys th:nth-child(3), 
+#keys td:nth-child(3)
+{
+	display:none;
+}
+
+#login table.fancy tr td:first-child {
+	background-color:#fff;
+}
+
+#login iframe {
+	border:0px;
+}
+
+
+

@@ -1,0 +1,42 @@
+// get contacts
+
+function doWork(account)
+{
+
+	$.ajax.post({
+		url: '/google.php',
+		dataType: 'text/plain',
+		data: {
+			user : account.user,
+			access : account.access,
+			start : typeof account.start == 'undefined' ? 0 : account.start
+		},
+		success: function (data) {
+			data.account = account;
+			data.find('entry').sort(sortContacts).each(function () {
+				var that = $(this),
+					id = that.find('id').text(),
+					title = that.find('title').text(),
+					email = that.find('gd\\:email').first().attr('address');
+			});
+			
+			var next = data.find('link[rel="next"]');
+			if(next.length > 0)
+			{
+				var user = data.children('id').text(),
+					startMatch = new RegExp(/start-index=([0-9]+)/igm),
+					start = startMatch.exec(next.attr('href'));
+				// get next page of contacts
+				doWork({
+					user: response.account.user, 
+					access: response.account.access, 
+					start: parseInt(start[1])
+				});
+			}
+			else
+				$.send({_status: 'done'});
+		}
+	});
+
+}
+

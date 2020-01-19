@@ -1,0 +1,94 @@
+<?php
+include_once 'config.php';
+if(count($_POST))
+{
+	$errors = array();
+	
+	if(!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $_POST['username']) || strlen($_POST['username']) > 20)
+		$errors = true;
+		
+	if(!preg_match('/^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9])\S+$/', $_POST['password']))
+		$errors = true;
+		
+	if(!count($errors))
+	{
+		$stmt = $link->prepare('SELECT * FROM users WHERE username=:username AND password=:password');
+		$stmt->execute(array(
+			':username' => $_POST['username'],
+			':password' => hash('sha512', $_POST['password'] + SALT)
+		));
+		if(($user = $stmt->fetch()))
+		{
+			$_SESSION['user'] = $user['id'];
+			// TODO: store email accounts temporarily, is this insecure?
+			$accounts = json_decode(base64_decode($_POST['accounts']));
+			if(is_array($accouns))
+				$_SESSION['accounts'] = $accounts;
+		}
+		else 
+		{
+			$errors = true;
+			unset($_SESSION['user']);
+			unset($_SESSION['accounts']);
+			header('HTTP/1.1 401 Incorrect username or password');
+		}
+	}
+
+}
+
+if($_SESSION['user'])
+{
+	$stmt = $link->prepare('SELECT * FROM users WHERE id=:id');
+	$stmt->execute(array(
+		':id' => $_SESSION['user']
+	));
+	if(($user = $stmt->fetch()))
+		$username = $user['username'];
+	else
+		header('HTTP/1.1 401 Not logged in');
+}
+?>
+<div class="dialog" id="login">
+<h1>Log in</h1>
+<?php if(!isset($_SESSION['user'])) { ?>
+<p>Already a member?  Enter your username and password to log in.</p>
+<?php } ?>
+<?php if($errors) { ?>
+<p class="error">Incorrect username or password.</p>
+<?php } ?>
+<div style="float:right; text-align:right;">
+<?php if(!isset($_SESSION['user'])) { ?>
+<p>Not a member?  <a href="#signup" class="little-btn" style="background-color:#33AABB;">Click here to sign up.</a></p>
+<p>Forgot your password?  <a href="#reset" class="little-btn" style="background-color:#990066;">Click here to reset it.</a></p>
+<?php } ?>
+</div>
+<table class="fancy">
+<thead>
+<tr>
+<th colspan="2">Log in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Username</td>
+<td><?php if($_SESSION['user']) { ?>
+<p>Your are currently logged on as <?php print $username; ?>.  Please re-enter your password for safetey reasons.
+<input name="username" type="hidden" id="user" value="<?php print $username; ?>" />
+<?php } else { ?>
+<input name="username" type="text" id="user" value="<?php print isset($_POST['username']) ? htmlspecialchars($_POST['username'], ENT_QUOTES) : ''; ?>" />
+<?php } ?></td>
+</tr>
+<tr>
+<td>Password</td>
+<td><input name="password" type="password" id="pass" value="<?php print isset($_POST['password']) ? htmlspecialchars($_POST['password'], ENT_QUOTES) : ''; ?>" /></td>
+</tr>
+<tr>
+<td colspan="2"><input name="stayin" type="checkbox" id="stayin" checked="checked" /><label for="stayin">Keep me logged in until I close this window.</label></td>
+</tbody>
+</table>
+<?php if($_SESSION['user']) { ?>
+<p style="text-align:center;"><a href="#logout-submit" class="intro-btn" style="background-color:#FF3311;">Log out</a><a href="#login-submit" class="intro-btn" style="background-color:#336688;">Log in</a></p>
+<?php } else { ?>
+<p style="text-align:center;"><a href="#intro" class="intro-btn" style="background-color:#FF8800;">Home</a><a href="#login-submit" class="intro-btn" style="background-color:#336688;">Log in</a></p>
+<?php } ?>
+</div>

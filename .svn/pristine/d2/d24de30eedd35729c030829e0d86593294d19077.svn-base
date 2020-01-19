@@ -1,0 +1,120 @@
+<?php
+include_once 'config.php';
+
+function sendCommand($sock, $cmd, $gets = true)
+{
+	$command = $cmd . "\r\n";
+	print 'sending: ' . $cmd . "\r\n";
+	fwrite($sock, $command);
+	
+	if($gets)
+	{
+		$line = fgets($sock);
+		return $line;
+	}
+}
+
+if($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+	header('Content-Type: text/plain');
+	
+	// split user field by the last occurring '@' symbol
+	$user = $_POST['user'];
+	$account_split = strrpos($user, '@');
+	if($account_split === false)
+	{
+		header('HTTP/1.1 500 Could not read account information');
+		exit; // display error and exit
+	}
+	
+	$user_host = array(substr($user, 0, $account_split),
+		substr($user, $account_split + 1, strlen($user) - $account_split - 1));
+	$host_port = explode(':', $user_host[1]);
+	
+	// validate the username, except allow an email address
+	if(!preg_match('/[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+)*(@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*/i', $user_host[0]))
+	{
+		header('HTTP/1.1 500 Invalid account username');
+		exit; // display error and exit
+	}
+	
+	// validate the host and port
+	if(!preg_match('/^(?P<host>[a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&\'()*+,;=:]+\])(:(?P<port>[0-9]+))?$/', $user_host[1]))
+	{
+		header('HTTP/1.1 500 Invalid host');
+		exit; // display error and exit
+	}
+	
+	// perform first connection attempt
+	$sock = fsockopen('tls://' . $host_port[0], (count($host_port) > 1 ? $host_port[1] : '465'), $errno, $errstr, 1);
+	if (!$sock)
+	{
+		// TODO: do DNS lookup for where to post
+		$sock = fsockopen('tls://' . 'smtp.' . $host_port[0], (count($host_port) > 1 ? $host_port[1] : '465'), $errno, $errstr, 1);
+		if (!$sock)
+		{
+			header('HTTP/1.1 500 Could not connect to host');
+			exit; // display error and exit
+		}
+	}
+	$welcome = fgets($sock);
+	
+	$greeting = sendCommand($sock, 'EHLO ' . $host_port[0]);
+	
+	// authenticate
+	print sendCommand($sock, 'AUTH LOGIN');
+	print sendCommand($sock, base64_encode($user_host[0]));
+	print sendCommand($sock, $_POST['pass']); // already base64 encoded
+	// check for failure
+	if(strpos($auth, 'failed'))
+	{
+		// try full e-mail as usename
+		print sendCommand($sock, 'RESET');
+		print sendCommand($sock, 'AUTH LOGIN');
+		print sendCommand($sock, base64_encode($user));
+		print sendCommand($sock, $_POST['pass']); // already base64 encoded
+		if(strpos($auth, 'failed'))
+		{
+			header('HTTP/1.1 401 Login failed');
+			exit; // display error and exit
+		}
+	}
+	
+	if(isset($_POST['mail']))
+	{
+		// start mail
+		print sendCommand($sock, 'MAIL FROM: <' . $_POST['path'] . '>');
+		print sendCommand($sock, 'RCPT TO: <' . $_POST['to'] . '>');
+		print sendCommand($sock, 'DATA');
+		while(substr(($line = fgets($sock)), 0, 3) != '354')
+			print $line;
+		print $line;
+		
+		$lines = preg_split('/\r*\n/i', $_POST['mail']);
+		foreach($lines as $i => $line)
+		{
+			$mail = sendCommand($sock, $line, false);
+		}
+		$mailed = sendCommand($sock, '.');
+		$goodbye = sendCommand($sock, 'QUIT');
+	}
+	
+	// last step before exiting
+	print json_encode(array(
+		'welcome' => $welcome,
+		'connect' => $connect,
+		'user' => $user_host[0],
+		'host' => $host_port[0],
+		'greeting' => $greeting,
+		'mailed' => $mailed,
+		'goodbye' => $goodbye
+	));
+		
+	ob_end_flush();
+	flush();
+	exit;
+}
+
+

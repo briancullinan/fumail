@@ -1,0 +1,26 @@
+// JavaScript Document
+
+importScripts('/jquery.hive.pollen.js');
+
+$(function (account) {
+	try {
+		// get contacts
+		$.ajax.post({
+			url: '/google.php',
+			dataType: 'text/plain',
+			data: {
+				user : account.user,
+				access : account.access,
+				start : typeof account.start == 'undefined' ? 0 : account.start
+			},
+			success: function (data) {
+				data.account = account;
+				$.send(data);
+			}
+		});
+	}
+	catch (e)
+	{
+		$.send('' + e + e.stack);
+	}
+});

@@ -1,0 +1,544 @@
+/* CSS Document */
+@import url("/dialog.css");
+@import url("/buttons.css");
+
+html, body {
+	margin:0px;
+	padding:0px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:16px;
+	height:100%;
+	width:100%;
+	color:#333;
+}
+
+body {
+	background-color:#FFF;
+}
+
+table.nosey {
+	width:100%;
+}
+
+table.nosey h2 {
+	padding:0px;
+	margin:0px;
+}
+
+table.nosey .list h2:first-child, .nosey .list h2:last-child {
+	color:#ccc;
+}
+
+table.nosey .list h2:nth-child(2), table.nosey .list h2:nth-child(4) {
+	color:#999;
+}
+
+input[type="email"], input[type="number"], 
+input[type="password"], input[type="tel"], 
+input[type="text"], input[type="url"],
+select,
+textarea
+{
+	padding:5px 5px;
+	border-width:0px 0px 1px 3px;
+	border-style:solid;
+	border-color:#DDD;
+	outline:none;
+}
+
+input[type="email"]:focus, input[type="number"]:focus, 
+input[type="password"]:focus, input[type="tel"]:focus, 
+input[type="text"]:focus, input[type="url"]:focus,
+select:focus,
+textarea:focus
+{
+	border-color:#33AABB;
+}
+
+#search {
+	max-width:300px;
+	width:100%;
+}
+
+table.fancy tr.error td:last-child, p.error {
+	color:#CC3333;
+	font-weight:bold;
+}
+
+table.fancy td, table.fancy th {
+	padding:10px;
+	vertical-align:top;
+}
+
+table.fancy tr td:first-child, table.fancy tr th:first-child {
+	width:150px;
+	vertical-align:middle;
+}
+
+table.fancy tr td:first-child {
+	background-color:#CCC;
+}
+
+table.fancy tr:nth-child(even) {
+	background-color:#CFF;
+}
+
+table.fancy tr:nth-child(odd) {
+	background-color:#FFF;
+}
+
+table.fancy th {
+	text-align:center;
+	background-color:#33AABB;
+	color:#ffffff;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.divider {
+	clear:both;
+	height:1px;
+	width:100%;
+	background-color:#CCC;
+	line-height:1px;
+	font-size:1px;
+}
+
+#folders {
+    clear: both;
+    max-height: 600px;
+    overflow: auto;
+	width:200px;
+	float:left;
+	position:fixed;
+	z-index:100;
+	padding:0px 10px;
+	margin:0px;
+	background-color:#fff;
+	top:94px;
+    list-style-image: none;
+    list-style-type: none;
+	height:50%;
+}
+
+#folders a {
+	padding: 5px 10px;
+	text-decoration:none;
+	border-radius: 1px;
+	display:inline-block;
+	width:100%;
+	color:#333;
+	outline:none;
+	white-space:nowrap;
+	position:relative;
+	border-left:3px solid #FFF;
+	border-bottom:1px solid #FFF;;
+}
+
+#folders li {
+	overflow:hidden;
+}
+
+#folders a:hover {
+	background-color:#ddd;
+}
+
+#folders a:focus {
+	color:#33AABB;
+	font-weight:bold;
+	border-color:#33AABB;
+}
+
+#folders ul {
+    list-style-image: none;
+    list-style-type: none;
+    padding:0px 10px;
+}
+
+#folders ul {
+	display:none;
+}
+
+#folders a.selected {
+	color:#FF8800;
+	font-weight:bold;
+	border-color:#FF8800;
+}
+
+#folders ul.expand,
+/* remove this to allow collapsing of root folders */
+#folders > li > ul
+{
+	display:block;
+}
+
+#mail {
+    border-spacing: 0;
+    float: left;
+    padding-left: 230px;
+    table-layout: fixed;
+    width: 100%;
+	position:relative;
+	z-index:99;
+}
+
+#mail td {
+	border-bottom:1px solid #CCCCCC;
+	padding:0px;
+	white-space:nowrap;
+}
+
+#mail tr {
+	background-color:#eee;
+}
+
+#mail tr.selected td,
+#mail tr:focus td {
+	border-color:#33AABB;
+}
+
+#mail tr.selected td:first-child,
+#mail tr:focus td:first-child {
+	border-color:#33AABB;
+}
+
+#mail tr.unseen {
+	background-color:#fff;
+	font-weight:bold;
+}
+
+#mail tr td:first-child {
+	border-left:2px solid #CCCCCC;
+	border-right:2px solid #CCCCCC;
+	width:2px;
+}
+
+#mail tr:hover td {
+	border-color:#FF8800;
+}
+
+#mail tr:hover td:first-child {
+	border-color:#FF8800;
+}
+
+#mail a {
+	white-space:nowrap;
+	padding:5px;
+	overflow:hidden;
+	text-decoration:none;
+	color:#333;
+	display:block;
+	outline:none;
+}
+
+#mail td:nth-child(2) {
+	width:200px;
+}
+
+#mail td:nth-child(4) {
+	width:200px;
+}
+
+#menubar {
+	background-color:#fff;
+	position:fixed;
+	z-index:999;
+	width:100%;
+	top:0px;
+	white-space:nowrap;
+}
+
+#menubar > *
+{
+	margin-top:25px;
+	margin-bottom:0px;
+	float:left;
+	margin-right:5px;
+	margin-left:5px;
+}
+
+#menubar .divider
+{
+	margin:0px;
+}
+
+#menubar ul .little-btn {
+	margin:0px 1px;
+}
+
+#tabs {
+	list-style: none;
+	clear:both;
+	float:left;
+	margin:0px;
+}
+
+#tabs li {
+	float:left;
+	display:inline-block;
+}
+
+.message {
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	border:0px;
+	height:500px;
+	width:600px;
+	background-color:#fff;
+	z-index:1000;
+	border-radius: 1px;
+	padding:0px;
+	margin:10px;
+	table-layout:fixed;
+	border-spacing:0px;
+	border-collapse:separate;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.message.collapsed {
+	height:24px;
+	width:200px;
+}
+
+.message.collapsed tr {
+	display:none;
+}
+
+.message.collapsed thead tr:first-child {
+	display:table-row;
+}
+
+.message th {
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	padding: 5px 5px;
+	text-align:left;
+	overflow:hidden;
+	font-weight:normal;
+	vertical-align:middle;
+	height:1px;
+}
+
+.message.compose th {
+	padding:0px 16px 0px 0px;
+}
+
+.message.compose tr:nth-child(2) th:last-child {
+	border-left:0px;
+}
+
+.message.compose tr:nth-child(2) th:first-child {
+	border-right:0px;
+}
+
+.message.compose tr:nth-child(2) th {
+	padding:0px;
+}
+
+.message thead tr:first-child th {
+	padding:0px 5px;
+}
+
+.message.compose tbody td {
+	padding:0px;
+}
+
+.message a[href="#max-message"]
+{
+	color:#fff;
+	text-decoration:none;
+	padding:5px 10px;
+	display:block;
+}
+
+.message a[href="#max-message"] span {
+	font-weight:bold;
+	margin:0px 5px 0px 0px;
+}
+
+.message thead tr:first-child th:first-child {
+	border-left:1px solid #333;
+	width:30px;
+	overflow:hidden;
+	padding:5px;
+}
+
+.message.compose.collapsed thead tr:first-child th:last-child {
+	width:0px;
+	padding:0px;
+}
+
+.message.compose thead tr:first-child th:last-child {
+	width:140px;
+	text-align:right;
+}
+
+.message thead tr:first-child th:last-child {
+	border-right:1px solid #333;
+	position:relative;
+	width: 26px;
+}
+
+.message thead tr:first-child div {
+	margin: 1px;
+	overflow: hidden;
+	position: absolute;
+	right: 5px;
+	text-align: right;
+	top: 5px;
+	width: 28px;
+}
+
+.message a[href="#reply-all"],
+.message a[href="#forward"] {
+	display:none;
+}
+
+.message .hover {
+	width:120px !important;
+	text-align:right;
+}
+
+.message .hover a {
+	display:inline-block;
+}
+
+.message thead tr:first-child th {
+	border-bottom:1px solid #333;
+	border-top:1px solid #333;
+	background-color:#333;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	color:#FFFFFF;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+	text-decoration:none;
+	white-space:nowrap;
+	border-left:0px;
+	border-right:0px;
+	overflow:hidden;
+}
+
+.message tbody td {
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	padding:5px;
+}
+
+.message iframe {
+    border: 0 none;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+}
+
+#attachments .part {
+	width:570px;
+	word-wrap:break-word;
+}
+
+#attachments pre {
+	white-space:pre-wrap;
+	font-size:14px;
+	word-wrap:break-word;
+}
+
+.message .attachments .decrypting {
+	float:left;
+	display:inline-block;
+	position:relative;
+	width:100%;
+	overflow:hidden;
+}
+
+#paging {
+	float:right;
+}
+
+#keys .loading,
+#folders .loading,
+#menubar .loading,
+.message .loading {
+	background-color: #FF8800;
+	bottom: 0px;
+	display: inline-block;
+	height: 2px;
+	left: 0px;
+	line-height: 1px;
+	position: absolute;
+	width: 50px;
+}
+
+.message .verify-failed {
+	padding:0px;
+}
+
+.message .verify-failed div {
+    border-color: #FF3311;
+    border-style: solid;
+    border-width: 0px 0px 1px 3px;
+	padding:5px;
+}
+
+.compose .subject,
+.compose .recipients {
+	width:100%;
+}
+
+.compose .jqte {
+	margin:0px !important;
+	box-shadow:none !important;
+	border-radius:0px;
+	position:relative;
+	border:0px !important;
+}
+
+.compose .jqte.checked .jqte_toolbar {
+	display:block;
+}
+
+.compose .jqte_focused {
+	outline: medium none !important;
+}
+
+.compose .jqte_focused .jqte_editor
+{
+	box-shadow: none !important;
+	border-color:#33AABB;
+}
+
+.compose .jqte_toolbar {
+	display:none;
+	border-color: #BBBB33;
+	border-style: solid;
+	border-width: 0px 0px 1px 3px;
+	padding:1px;
+}
+
+.compose .jqte_editor {
+	padding:5px;
+	resize:none;
+	border-width:0px 0px 1px 3px;
+	border-style:solid;
+	border-color:#DDD;
+}
+
+.compose select {
+	width:100%;
+}
+
+.compose .jqte_tool_20,
+.compose .jqte_tool_21
+{
+	display:none;
+}
+
+
+
+
+

@@ -1,0 +1,805 @@
+/* CSS Document */
+@import url("/dialog.css");
+@import url("/buttons.css");
+@import url("/jqte.css");
+
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	src: local('Open Sans Light'), local('OpenSans-Light'), url(/OpenSans-Light.woff) format('woff');
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Open Sans'), local('OpenSans'), url(/OpenSans.woff) format('woff');
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Open Sans Bold'), local('OpenSans-Bold'), url(/OpenSans-Bold.woff) format('woff');
+}
+
+html, body {
+	margin:0;
+	padding:0;
+	font-family:'Open Sans',Helvetica,sans-serif;
+	font-size:1.05em;
+	font-weight:300;
+	font-style:normal;
+	width:100%;
+	color:#333;
+}
+
+#templates {
+    display:none;
+}
+
+.menu #menubar h1 {
+    margin-left:-70%;
+}
+
+#menubar h1 {
+    font-size:1.6em;
+    font-weight: 300;
+    text-align: center;
+    margin:0;
+}
+
+#menubar h1 a
+{
+    text-decoration: none;
+    color: #111144;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+}
+
+#menubar h1 a:hover
+{
+    text-decoration: underline;
+    color: #111144;
+    text-shadow: 0 -1px 1px rgba(15, 33, 50, 0.25), -2px 0 1px rgba(15, 33, 50, 0.25);
+}
+
+a {
+	outline:none;
+}
+
+.jqte b, .jqte strong, b, strong
+{
+    font-weight: 700;
+}
+
+
+#search input {
+    padding: 7px 5px 6px;
+	width:90%;
+}
+
+#search {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    display: block;
+    max-width: 16em;
+    padding:0;
+    position: fixed;
+    width: 74%;
+    z-index: 101;
+}
+
+body {
+	background-color:#FFF;
+}
+
+table.nosey {
+	width:100%;
+}
+
+table.nosey h2 {
+	padding:0;
+	margin:0;
+}
+
+table.nosey .list h2:first-child, .nosey .list h2:last-child {
+	color:#ccc;
+}
+
+table.nosey .list h2:nth-child(2), table.nosey .list h2:nth-child(4) {
+	color:#999;
+}
+
+input[type="email"], input[type="number"], 
+input[type="password"], input[type="tel"], 
+input[type="text"], input[type="url"],
+select,
+textarea,
+.jqte_linkinput,
+.jqte_linkinput:hover,
+.jqte_linktypeview
+{
+	padding:5px 5px;
+	border-width:0 0 1px 3px;
+	border-style:solid;
+	border-color:#DDD;
+	outline:none;
+	margin:0;
+    border-radius:0 0 0 0;
+    font-family:'Open Sans',Helvetica,sans-serif;
+    font-size:1.05em;
+    font-weight:300;
+    font-style:normal;
+    box-shadow: none;
+}
+
+input[type="email"]:focus, input[type="number"]:focus, 
+input[type="password"]:focus, input[type="tel"]:focus, 
+input[type="text"]:focus, input[type="url"]:focus,
+select:focus,
+textarea:focus,
+.jqte_linkinput:focus
+{
+	border-color:#33AABB;
+}
+
+table.fancy tr.error td:last-child, p.error {
+	color:#CC3333;
+	font-weight:700;
+}
+
+table.fancy td, table.fancy th {
+	padding:10px;
+	vertical-align:top;
+}
+
+table.fancy tr td:first-child, table.fancy tr th:first-child {
+	width:150px;
+	vertical-align:middle;
+}
+
+table.fancy tr td:first-child {
+	background-color:#CCC;
+}
+
+table.fancy tr:nth-child(even) {
+	background-color:#CFF;
+}
+
+table.fancy tr:nth-child(odd) {
+	background-color:#FFF;
+}
+
+table.fancy th {
+	text-align:center;
+    color:#ffffff;
+    background: #33AABB url("/overlay.png") repeat-x 0 0;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+}
+
+table.fancy {
+	max-width:750px;
+}
+
+#nav
+{
+	background-color: #FFFFFF;
+	top:0;
+	left:0;
+	width:80%;
+	z-index: 100;
+	position:absolute;
+	max-width:16em;
+	display:none;
+	overflow:hidden;
+	height:100%;
+}
+
+#results .highlight, .ui-autocomplete .highlight
+{
+    background-color:#BBBB33;
+}
+
+#results,
+#menu,
+#contacts,
+#folders
+{
+	list-style-image: none;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+#nav > ul:first-of-type
+{
+    margin: 2.3em 0 0;
+}
+
+.menu #nav {
+	display:block;
+	overflow:visible;
+	height:auto;
+}
+
+#results a,
+#menu a,
+#contacts li a:first-child,
+.ui-autocomplete li a,
+#folders a {
+	padding: 5px 10px;
+	text-decoration:none;
+	border-radius: 1px;
+	display:inline-block;
+	width:100%;
+	color:#333;
+	white-space:nowrap;
+	position:relative;
+	border-left:3px solid #FFF;
+	border-bottom:1px solid #FFF;;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+#contacts li a:nth-child(2):hover,
+#contacts li a:nth-child(3):hover,
+.ui-autocomplete li .item:hover
+{
+    width:auto;
+    z-index:100;
+    background-color:#ffffff;
+}
+
+#contacts a, .ui-autocomplete a
+{
+    display:none;
+    color:#333;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    text-decoration:none;
+    padding: 2px 10px;
+    border:none;
+}
+
+.ui-autocomplete li a
+{
+    padding:1px 10px 15px 10px;
+}
+
+#contacts li a:first-child, .ui-autocomplete li a
+{
+    display:inline-block;
+}
+
+#contacts li a:nth-child(2), .ui-autocomplete li .item_1
+{
+    bottom: 0;
+    display: block;
+    font-size: 0.7em;
+    left: 0;
+    position: absolute;
+    width:40%;
+    padding: 1px 10px;
+}
+
+#contacts li a:nth-child(3), .ui-autocomplete li .item_2
+{
+    bottom: 0;
+    display: block;
+    font-size: 0.7em;
+    position: absolute;
+    right: 10%;
+    width:40%;
+    text-align:right;
+}
+
+.ui-autocomplete li
+{
+    position:relative;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+#contacts li
+{
+    position:relative;
+    margin: 0;
+    overflow: hidden;
+    padding: 2px 30px 2px 0;
+}
+
+#results li,
+#menu li,
+#folders li {
+	margin: 0;
+	overflow: hidden;
+	padding: 0px 30px 0px 0;
+}
+
+#results a:hover,
+#menu a:hover,
+#contacts li a:hover,
+.ui-autocomplete li a:hover,
+#folders a:hover,
+#results a:focus,
+#menu a:focus,
+#contacts li a:focus,
+#folders a:focus {
+	color:#33AABB;
+	font-weight:700;
+	border-color:#33AABB;
+}
+
+#folders ul {
+    list-style-image: none;
+    list-style-type: none;
+    padding:0px 10px;
+	display:none;
+}
+
+#menu a.selected,
+#contacts a.selected,
+#folders a.selected {
+	color:#FF8800;
+	font-weight:700;
+	border-color:#FF8800;
+}
+
+#folders ul.expand,
+/* remove this to allow collapsing of root folders */
+#folders > li > ul
+{
+	display:block;
+}
+
+#mail {
+	border-spacing: 0;
+	max-width: none;
+	overflow: hidden;
+	padding-bottom: 2em;
+	z-index: 99;
+}
+
+#mail a {
+	border-bottom:1px solid #CCCCCC;
+	border-left:3px solid #CCCCCC;
+	padding:0 0 0.7em 0;
+	white-space:nowrap;
+	background-color:#eee;
+	position:relative;
+	display:block;
+	font-size:0.9em;
+	height:2em;
+	background-color:#fff;
+}
+
+#mail a.selected {
+	border-color:#33AABB;
+}
+
+#mail .unseen {
+	background-color:#fff;
+	font-weight:700;
+}
+
+#mail a span:first-child {
+	width:2px;
+}
+
+#mail a:hover {
+	border-color:#FF8800;
+}
+
+#mail span {
+	white-space:nowrap;
+	padding:2px;
+	overflow:hidden;
+	text-decoration:none;
+	color:#333;
+	display:inline-block;
+	max-width:100%;
+}
+
+#mail a span:nth-child(2) {
+	width:60%;
+	position:absolute;
+	bottom:0px;
+	font-size:0.8em;
+}
+
+#mail a span:nth-child(3) {
+	text-overflow: ellipsis;
+	width:auto;
+}
+
+#mail a span:nth-child(4) {
+	max-width:22%;
+	position:absolute;
+	right:0px;
+	bottom:0px;
+	font-size:0.8em;
+}
+
+#menubar {
+	position:fixed;
+	z-index:1000;
+	width:100%;
+	top:0px;
+	white-space:nowrap;
+	border-bottom:1px solid #CCCCCC;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+	background-color:#fff;
+	left:0px;
+    opacity:0.7;
+}
+
+#menubar:hover
+{
+    opacity:1.0;
+}
+
+.menu {
+	overflow-x:hidden;
+}
+
+.menu #menubar {
+	left:inherit;
+    overflow:hidden;
+}
+
+#content
+{
+	position:relative;
+	min-height: 100%;
+	z-index:999;
+	background-color:#ffffff;
+	left:0;
+	margin:0px;
+}
+
+.menu #content
+{
+	left:70%;
+	right:-70%;
+	box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1);
+	position:fixed;
+}
+
+.message {
+	border:0px;
+	background-color:#fff;
+	border-radius: 1px;
+	padding:0 0 2em;
+	table-layout:fixed;
+	border-spacing:0px;
+	border-collapse:collapse;
+	width:100%;
+	height:24px;
+	overflow:hidden;
+}
+
+.message:last-child
+{
+	height:auto;
+	overflow:visible;
+}
+
+.message:last-child > thead > tr,
+.message:last-child > tbody > tr
+{
+	display:table-row;
+}
+
+.message > thead > tr, .message > tbody > tr {
+	display:none;
+}
+
+.message > thead tr:first-child {
+	display:table-row;
+}
+
+.message > thead th {
+	border:0;
+	padding: 5px 5px;
+	text-align:left;
+	overflow:hidden;
+	font-weight:300;
+	vertical-align:middle;
+	height:1px;
+}
+
+.message.compose > thead th {
+	padding:0px 16px 0px 0px;
+    position:relative;
+}
+
+.message.compose > thead tr:nth-child(2) th {
+	padding:0px;
+}
+
+.message.compose > thead tr:nth-child(2) th a {
+	float:left;
+	padding: 4px 5px;
+}
+
+.message > thead tr:first-child th {
+	padding:0px 5px;
+}
+
+.message.compose > tbody > tr > td {
+	padding:0px;
+}
+
+.message > thead tr:first-child th:nth-child(2) a
+{
+	color: #FFFFFF;
+	display: block;
+	overflow: hidden;
+	padding: 5px 10px;
+	text-decoration: none;
+	text-overflow: ellipsis;
+}
+
+.message > thead th:nth-child(2) a span {
+	font-weight:700;
+	margin:0px 5px 0px 0px;
+}
+
+.message > thead tr:first-child th:first-child {
+	width:30px;
+	padding:5px;
+}
+
+.message.compose.collapsed > thead tr:first-child th:last-child {
+	width:0px;
+	padding:0px;
+}
+
+.message.compose > thead tr:first-child th:last-child {
+	width:140px;
+	text-align:right;
+}
+
+.message > thead tr:first-child th:last-child {
+	position:relative;
+	text-align:right;
+	width: 30px;
+}
+
+.message > thead tr:first-child th.hover {
+	width:100px !important;
+}
+
+.message > thead tr:first-child div {
+	margin: 1px;
+	overflow: hidden;
+	position: relative;
+}
+
+.message a[href="#reply-all"],
+.message a[href="#forward"] {
+	display:none;
+}
+
+.message .hover a {
+	display:inline-block;
+}
+
+.message > thead tr:first-child th {
+	background-color:#333;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	color:#FFFFFF;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+	text-decoration:none;
+	white-space:nowrap;
+	overflow:hidden;
+}
+
+.message > tbody > tr > td {
+	border:0;
+	padding:5px;
+}
+
+
+.message .part {
+	word-wrap:break-word;
+    position:relative;
+    overflow:hidden;
+}
+
+.message tbody blockquote {
+    margin:2px;
+    padding:3px;
+}
+
+.message .attachments .decrypting {
+	float:left;
+	display:inline-block;
+	position:relative;
+	width:100%;
+	overflow:hidden;
+}
+
+.message .headers > span:hover,
+.message .headers > span:focus
+{
+    white-space: normal;
+    overflow: visible;
+}
+
+.message .headers > span
+{
+    display:inline-block;
+    min-width:50%;
+    float:left;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    max-width:100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message .headers > span > span
+{
+    font-weight: 700;
+    display:inline-block;
+    min-width:3em;
+}
+
+#paging {
+	bottom: 0;
+	position: absolute;
+	width: 100%;
+	z-index:100;
+	text-align:center;
+}
+
+#keys .loading,
+#folders .loading,
+#menubar .loading,
+.message .loading {
+	background-color: #FF8800;
+	bottom: 0px;
+	display: inline-block;
+	height: 2px;
+	left: 0px;
+	line-height: 1px;
+	position: absolute;
+	width: 50px;
+}
+
+.message .decryption-failed,
+.message .verify-failed
+{
+	padding:0px;
+}
+
+.message .decryption-failed div,
+.message .verify-failed div
+{
+    border-color: #FF3311;
+    border-style: solid;
+    border-width: 0px 0px 1px 3px;
+	padding:5px;
+}
+
+.ui-helper-hidden-accessible
+{
+    display:none;
+}
+
+.ui-autocomplete
+{
+    background-color: #FFFFFF;
+    border: 0 none;
+    display: block;
+    list-style: none outside none;
+    margin: 0;
+    max-width: 600px;
+    outline: medium none;
+    padding: 0;
+    position: absolute;
+    width: 100% !important;
+    z-index: 1001;
+}
+
+.compose .subject,
+.compose .recipients {
+	width:100%;
+}
+
+.compose select {
+	width:100%;
+}
+
+.compose .jqte_tool_20,
+.compose .jqte_tool_21
+{
+	display:none;
+}
+
+#login ul,
+#intro ul {
+	list-style: none outside none;
+	padding: 0;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#login div,
+#intro div
+{
+	padding: 0 2%;
+	clear:both;
+}
+
+#login ul p,
+#intro ul p {
+	margin:0;
+}
+
+#login ul a,
+#intro ul a {
+	text-decoration:none;
+	overflow: visible;
+	text-overflow: clip;
+	white-space: normal;
+	display: block;
+	padding:0.5em;
+	color:#333333;
+}
+
+#login ul a:hover,
+#intro ul a:hover {
+	background-color:#F7F7F7;
+}
+
+#login li,
+#intro li
+{
+	overflow: visible;
+	position: relative;
+	list-style: none outside none;
+	padding: 0;
+	text-shadow: 0 1px 0 #FFFFFF;
+	border-color:#CCCCCC;
+    border-width: 1px 1px 0;
+	border-style:solid;
+}
+
+#login li:first-child,
+#intro li:first-child
+{
+	border-radius:2px 2px 0px 0px;
+}
+
+#login li:last-child,
+#intro li:last-child
+{
+	border-bottom-width:1px;
+	border-radius:0px 0px 2px 2px;
+}
+
+#login ul h2,
+#intro ul h2
+{
+	color: #11AAEE;
+	font-size: 0.9em;
+	font-weight: 700;
+	margin: 0.1em 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#other-entry
+{
+    display:none;
+}
+
+

@@ -1,0 +1,58 @@
+// JavaScript Document
+importScripts('/jquery.hive.pollen.js');
+$.text = function (data) {
+	return {html: function ()
+		{
+			return data;
+		}
+	}
+};
+
+function showMessages(text)
+{
+	result = '' + text;
+	if(typeof text == 'object')
+		for(var prop in text)
+			result += prop + ' = ' + text[prop]
+	self.postMessage(result);
+}
+
+importScripts('/openpgp.js');
+importScripts('/mail.js');
+
+try {
+	var localStorage = {};
+	// fix for openpgp errors
+	window = {
+		localStorage: {
+			getItem: function (name) { 
+				return typeof localStorage[name] == 'undefined' 
+					? null 
+					: localStorage[name]; },
+			setItem: function (name, value) { localStorage[name] = value; }
+		}
+	};
+	importScripts('/keys.js');
+	
+	$(function (decContent) {
+		var decMessage = openpgp.read_message(decContent.message);
+		if(decMessage == null || typeof decMessage[0] == 'undefined')
+		{
+			self.postMessage('failed');
+			return;
+		}
+		var [key, session] = determineKeyPair(decMessage[0]);
+		var decrypted = decMessage[0].decrypt(key, session);
+		if(decrypted == null)
+			return [output, headers];
+		var [decOutput, decHeaders] = parseHeaders(decrypted);
+		[decOutput, decHeaders] = parseBody(decOutput, decHeaders);
+		// merge output and headers
+		$.send({decOutput: decOutput, decHeaders: decHeaders, placeholder: decContent.placeholder});
+	});
+}
+catch (e)
+{
+	showMessages(e);
+}
+

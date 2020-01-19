@@ -1,0 +1,398 @@
+// JavaScript Document
+
+// used for working on decrypting messages in the background
+var hive = null;
+var placeholders = {};
+
+function hex2a(hex) 
+{
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
+function trimAttributes(tag, allowedAttrs) {
+	// TODO: var matches = new RegExp(
+	return tag;
+}
+
+var sanitizeLevel1 = {
+	'p' : ['style'], 
+	'div' : ['style'], 
+	'table' : ['style'], 
+	'tr' : ['style'],
+	'td' : ['style'],
+	'th' : ['style'],
+	'tbody' : ['style'],
+	'thead' : ['styke'],
+	'font': ['color', 'style'], 
+	'strong': ['style'], 
+	'b': ['style'], 
+	'i': ['style'],
+	'span' : ['style'],
+	'a' : ['href'],
+	'em' : ['style'],
+	'br' : ['style'],
+	'style' : ['src'],
+	'tab' : ['style'],
+	'h1' : ['style'],
+	'h2' : ['style'],
+	'h3' : ['style'],
+	'h4' : ['style'],
+	'h5' : ['style'],
+	'hr' : ['style'],
+	'blockquote' : ['style'],
+	'pre' : ['style'] };
+	
+function sanitizeBody(content, allowed)
+{
+	var whitelist = allowed || sanitizeLevel1;
+	// get a list of existing tags
+	var tags = [],
+		matches = new RegExp(/<\/?([a-z][a-z0-9]*)[^<>]*>/igm),
+		output = ''
+		last = null;
+	while($match = matches.exec(content))
+	{
+		// exclude 'safe' matches
+		var allowedAttrs = whitelist[$match[1].toLowerCase()];
+		if(allowedAttrs)
+		{
+			// everything up to the match is ok
+			output += content.substring(last == null ? 0 : (last.index + last[0].length), $match.index);
+			var trimmedAttrs = trimAttributes($match[0], allowedAttrs);
+			// just replace the invalid attributes
+			output += trimmedAttrs;
+		}
+		else
+		{
+			tags.push(matches[0]);
+			output += content.substring(last == null ? 0 : (last.index + last[0].length), $match.index);
+			// skip appending tag
+		}
+		last = $match;
+	}
+	
+	return output;
+}
+
+function parseQuotedPrintable(content)
+{
+	var output = content.replace(/=\r?\n/igm, ''),
+		matches = new RegExp(/=([0-9a-fA-F]{2})/igm);
+	while($match = matches.exec(output))
+		output = output.replace(new RegExp($match[0], 'igm'), hex2a($match[1]));
+	return output;
+}
+
+//this is already done by php, just have to match boundaries
+function parseHeaders(content)
+{
+	var matches = new RegExp(/^([\x21-\x39\x3B-\x7E]+?):(.*)$(^\s+.*$)*/igm),
+		headend = new RegExp(/^[\s]*$\r?\n^$/im).exec(content),
+		raw = content.substring(0, headend.index).trim(),
+		// replace everything up to the first empty line
+		output = content.substr(headend.index + headend.length)
+						.trim(),
+		// this becomes the return value
+		headers = {},
+		last = null,
+		$match = null;
+		
+	while($match = matches.exec(raw))
+	{
+		headers[$match[1].trim().toLowerCase()] = $match[2].split(';')[0].trim();
+		var parameters = $match[0].split(';');
+		for(var i in parameters)
+		{
+			if(i == 0)
+			{
+				continue;
+			}
+			// the part is a key : value
+			else
+			{
+				var kvPair = new RegExp(/^\s+([\x21-\x39\x3B-\x7E]+?)=(.*)$/igm).exec(parameters[i]);
+				if(kvPair != null && kvPair.length > 1)
+				{
+					if(typeof headers['parameters'] == 'undefined')
+						headers['parameters'] = {};
+					headers['parameters'][kvPair[1].trim().toLowerCase()] = kvPair[2].trim().replace(/^"|"$/igm, '');
+				}
+			}
+		}
+			
+		last = $match;
+	}
+	
+	if(typeof headers['content-type'] != 'undefined')
+	{
+		headers.type = types.indexOf(headers['content-type'].split('/')[0])
+		headers.subtype = headers['content-type'].split('/')[1].toUpperCase();
+	}
+	else
+	{
+		// reset the body since we don't know what it is
+		headers['content-type'] = 'text/plain';
+		headers['type'] = 0;
+		headers['subtype'] = 'PLAIN';
+		output = content;
+	}
+	// if there is another boundary parse those too
+	// creates a structure like:
+	//   content-type : text/plain,
+	//   boundary : ---_243012948209dslkjasf9,
+	//   ---_243012948209dslkjasf9 : [
+	//     content-type : text/html,
+	//     encoding : utf-8
+	//   ]
+	return [output, headers];
+}
+
+function determineKeyPair(decMessage)
+{
+	var keymat = null,
+		sesskey = null;
+	for(var ki in openpgp.keyring.privateKeys)
+	{
+		var privKey = openpgp.keyring.privateKeys[ki];
+		for (var i = 0; i< decMessage.sessionKeys.length; i++) 
+		{
+			if (privKey.obj.getKeyId() == decMessage.sessionKeys[i].keyId.bytes) {
+				keymat = { key: privKey.obj, keymaterial: privKey.obj.privateKeyPacket};
+				sesskey = decMessage.sessionKeys[i];
+				break;
+			}
+			for (var j = 0; j < privKey.obj.subKeys.length; j++) {
+				if (privKey.obj.subKeys[j].publicKey.getKeyId() == decMessage.sessionKeys[i].keyId.bytes) {
+					keymat = { key: privKey.obj, keymaterial: privKey.obj.subKeys[j]};
+					sesskey = decMessage.sessionKeys[i];
+					break;
+				}
+			}
+		}
+	}
+	if (keymat != null && !keymat.keymaterial.decryptSecretMPIs('')) 
+	{
+		throw "Passphrase for secrect key was incorrect!";
+	}
+
+	return [keymat, sesskey];
+}
+
+function escapeHtml(text) {
+  return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+}
+
+function messageDecrypted(data)
+{
+	if(typeof data.decHeaders != 'undefined')
+	{
+		var [headers, output, pgp] = placeholders[data.placeholder];
+		// merge headers for reprocessing, uses closure from above
+		for(var header in data.decHeaders)
+			if(typeof headers[header] == 'undefined')
+				headers[header] = data.decHeaders[header];
+		data.decOutput = output.substring(0, pgp.index) + data.decOutput + 
+					output.substring(pgp.index + pgp[0].length);
+		// replace with processed mail
+		var results = parseMultipart({message: headers, body: data.decOutput});
+		$('.message iframe').each(function () {
+			var frame = $(this);
+			var attachments = frame.data('body');
+			for(var i in attachments)
+				if(attachments[i].body.indexOf(data.placeholder) > -1)
+				{
+					refreshBody(frame.contents(), frame, results);
+					break;
+				}
+		});
+	}
+	
+}
+
+function parseBody(content, headers)
+{
+	var output = content;
+	
+	// create parameters obejct
+	if(typeof headers.parameters != 'undefined')
+		for(var i in headers.parameters)
+			if(typeof headers.parameters[i]['attribute'] != 'undefined')
+				headers.parameters[headers.parameters[i]['attribute']] = headers.parameters[i].value;
+	
+	
+	if(typeof headers['parameters'] != 'undefined' &&
+		typeof headers['parameters']['boundary'] != 'undefined')
+	{
+		headers.bodies = [];
+		// get the text between boundaries
+		var matchBody = new RegExp(
+			'^\s*(--)*' + RegExp.escape(headers['parameters']['boundary']) + '(--)*\s*$', 'igm'),
+			last = null;
+			
+		// loop through parts and extract content
+		while($match = matchBody.exec(content))
+			if(last == null)
+				last = $match;
+			else
+			{
+				var tmpBody = content.substring(last.index + last[0].length, $match.index).trim();
+				if(typeof headers.parts == 'undefined')
+					headers.parts = [];
+				if(typeof headers.parts[headers.bodies.length] == 'undefined')
+				{
+					[tmpBody, headers.parts[headers.bodies.length]] = parseHeaders(tmpBody);
+					headers.bodies[headers.bodies.length] = tmpBody;
+				}
+				else
+				{
+					var [tmpBody, tmpHeaders] = parseHeaders(tmpBody);
+					// merge headers
+					for(var header in tmpHeaders)
+						headers[header] = tmpHeaders[header];
+					headers.bodies[headers.bodies.length] = tmpBody;
+				}
+				
+				last = $match;
+			}
+		// bubble back to multipart so it can be queued for processing of headers.bodies
+		return [content, headers];
+	}
+	
+	if((typeof headers['content-transfer-encoding'] != 'undefined' &&
+		headers['content-transfer-encoding'] == 'quoted-printable') ||
+		headers['encoding'] == 4)
+		output = parseQuotedPrintable(output);
+		
+	
+	if(typeof headers['content-type'] != 'undefined' &&
+		headers['content-type'] == 'text/html' || 
+		headers['subtype'] == 'HTML')
+		output = sanitizeBody(output);
+		
+	if(typeof headers['content-type'] == 'undefined' ||
+		headers['content-type'] == 'text/plain' ||
+		headers['subtype'] == 'PLAIN')
+		output = escapeHtml(output);
+	
+	if(typeof headers['content-type'] != 'undefined' &&
+		headers['content-type'] == 'application/octet-stream')
+	{
+	}
+		
+	// check for PGP encryption
+	var pgp = new RegExp(/-----BEGIN PGP.*?$([\s\S]*?)-----END PGP.*-*/igm).exec(output);
+	if(pgp)
+	{
+		var decContent = pgp[0];
+		if(typeof headers['content-type'] != 'undefined' &&
+			headers['content-type'] == 'text/html')
+			decContent = sanitizeBody(decContent, {});
+		// remove any extra whitespaces
+		decContent = decContent.replace(/(\&nbsp;|\t| )*$\r?\n(\&nbsp;|\t| )*/igm, '\r\n');
+		// start a worker to handle processing
+		var ph = CryptoJS.lib.WordArray.random(16).toString();
+		placeholders[ph] = [headers, output, pgp];
+		if(hive == null)
+		{
+			hive = $.Hive.create({
+				worker: '/decrypt.js',
+				receive: function (data) {
+					messageDecrypted(data);
+				},
+				created: function (hive) {
+					$( $.Hive.get() ).send({
+						'message' : decContent,
+						'placeholder': ph
+					});
+				}
+			});
+		}
+		else
+			$( $.Hive.get() ).send({
+				'message' : decContent,
+				'placeholder': ph
+			});
+		
+		return [ph, headers];
+	}
+
+	return [output, headers];
+}
+
+// add escape function
+RegExp.escape= function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+};
+var types = [
+	'text',
+	'multipart',
+	'message',
+	'application',
+	'audio',
+	'image',
+	'video',
+	'other'];
+
+function parseMultipart(result)
+{
+	// select body parts
+	result.message['content-type'] = types[result.message.type] + '/' + result.message.subtype.toLowerCase();
+	[result.body, result.message] = parseBody(result.body, result.message);
+	var multi = [result.message],
+		results = [],
+		part = null;
+	// this is a result as there are no parts
+	if(typeof result.message.parts == 'undefined')
+		results[results.length] = {body : result.body, headers : result.message};
+		
+	while(part = multi.pop())
+	{
+		if(typeof part.parts != 'undefined')
+		{
+			for(var i in part.parts)
+			{
+				if(part.parts[i].subtype == 'MIXED' ||
+					part.parts[i].subtype == 'RELATED' ||
+					part.parts[i].subtype == 'ALTERNATIVE' ||
+					part.parts[i].subtype == 'ENCRYPTED')
+				{
+					part.parts[i]['content-type'] = types[part.parts[i].type] + '/' + part.parts[i].subtype.toLowerCase();
+					var [$body, headers] = parseBody(part.bodies[i], part.parts[i]);
+					multi.push(part.parts[i]);
+				}
+				
+				// if it HTML the get the block of text
+				else if(part.parts[i].subtype == 'HTML' ||
+					part.parts[i].subtype == 'PLAIN' ||
+					part.parts[i].subtype == 'PGP-ENCRYPTED' ||
+					part.parts[i].subtype == 'OCTET-STREAM')
+				{
+					// parseHeaders will understand it and return the message information
+					part.parts[i]['content-type'] = types[part.parts[i].type] + '/' + part.parts[i].subtype.toLowerCase();
+					var [$body, headers] = parseBody(part.bodies[i], part.parts[i]);
+					if(typeof headers.parts != 'undefined')
+						multi.push(headers);
+					else
+						results[results.length] = {body : $body, headers : headers};
+				}
+			}
+		}
+		
+		// TODO:  implement levels of trust for content
+		/*[content, headers] = parseHeaders(
+			content.replace(new RegExp(boundary + '\s*', 'igm'), '')
+				   .replace(/\s*--\s*$/igm, '')
+				   .trim());
+		*/
+	}
+	
+	return results;
+}

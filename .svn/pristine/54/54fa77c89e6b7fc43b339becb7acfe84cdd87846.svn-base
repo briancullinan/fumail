@@ -1,0 +1,71 @@
+// get contacts
+
+function sortContacts(a, b)
+{
+	var aTitle = firstNonEmpty(a),
+		bTitle = firstNonEmpty(b);
+	return aSort.toLowerCase().localeCompare(bSort.toLowerCase());
+}
+
+function firstNonEmpty(entry)
+{
+	for(var i in entry['children']['title'])
+	{
+		if(entry['children']['title'][i]['text'].trim() != '')
+			return entry['children']['title'][i]['text'].trim();
+	}
+	for(var i in entry['children']['gd:email'])
+	{
+		if(entry['children']['gd:email'][i]['text'].trim() != '')
+			return entry['children']['gd:email'][i]['text'].trim();
+	}
+}
+
+function doWork(account)
+{
+
+	$.ajax.post({
+		url: '/google.php',
+		dataType: 'text/plain',
+		data: {
+			user : account.user,
+			access : account.access,
+			start : typeof account.start == 'undefined' ? 0 : account.start
+		},
+		success: function (data) {
+			data.account = account;
+			var entries = data['children']['entry'].sort(sortContacts),
+				results = [];
+			for(var i in entries)
+			{
+				results[results.length] = {
+					id: entries[i]['children']['id']['text'],
+					title: firstNonEmpty(entries[i])
+				};
+			}
+			
+			var next = '';
+			for(var i in data['children']['link'])
+			{
+				if(data['children']['link'][i]['attributes']['rel'] == 'next')
+					next = data['children']['link'][i]['attributes']['href'];
+			}
+			
+			if(next != '')
+			{
+				var startMatch = new RegExp(/start-index=([0-9]+)/igm),
+					start = startMatch.exec(next);
+				// get next page of contacts
+				doWork({
+					user: account.user, 
+					access: account.access, 
+					start: parseInt(start[1])
+				});
+			}
+			else
+				$.send({_status: 'done'});
+		}
+	});
+
+}
+

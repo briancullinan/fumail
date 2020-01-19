@@ -1,0 +1,114 @@
+<?php include_once 'config.php'; ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="target-densitydpi=device-dpi, initial-scale=1.0, user-scalable=no" />
+    <title>Welcome to FUMAIL</title>
+    <script type="text/javascript" src="/rollups/sha1.js"></script>
+    <script type="text/javascript" src="/rollups/tripledes.js"></script>
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/jquery.hive.js"></script>
+    <script type="text/javascript" src="/jquery.scrollintoview.js"></script>
+    <script type="text/javascript" src="/jquery.watermark.min.js"></script>
+    <script type="text/javascript" src="/jquery-te-1.4.0.min.js"></script>
+    <script type="text/javascript" src="/jquery.scoped.js"></script>
+    <script type="text/javascript" src="/google.js"></script>
+    <script type="text/javascript" src="/jsonselect.js"></script>
+    <script type="text/javascript" src="/linq/linq.js"></script>
+    <script type="text/javascript" src="/linq/jquery.linq.js"></script>
+    <script type="text/javascript" src="/mail.js"></script>
+    <script type="text/javascript" src="/nav.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/media.css"/>
+</head>
+
+<body>
+<div id="nav">
+    <div id="search"><input name="search" type="text" /></div>
+    <ul id="menu">
+        <li><a href="#mail"><span>Mail</span></a></li>
+        <li><a href="#folders"><span>Folders</span></a></li>
+        <li><a href="#contacts"><span>Contacts</span></a></li>
+        <li><a href="#write"><span class="pen">Write</span></a></li>
+        <li><a href="#login"><span class="settings">Sign in</span></a></li>
+        <li><a href="#keys"><span class="key">Keys</span></a></li>
+        <li><a href="#how">Learn more<span class="how">?</span></a></li>
+    </ul>
+    <ul id="folders"></ul>
+    <ul id="contacts"></ul>
+</div>
+<div id="content">
+    <div id="menubar">
+        <h1><a href="#menu">FuMail</a></h1>
+    </div>
+    <?php include 'intro.php'; ?>
+    <?php include 'how.php'; ?>
+    <?php include 'login.php'; ?>
+    <?php include 'keys.php'; ?>
+    <div id="paging">
+        <span id="count"></span>
+        <a href="#back" class="little-btn"><span class="back"></span></a><a href="#next" class="little-btn"><span class="next"></span></a>
+    </div>
+    <div id="mail" class="dialog"></div>
+</div>
+<div id="templates">
+    <table class="message">
+        <thead>
+            <tr><th><a class="little-btn" href="#close-message"><span class="close"></span></a></th>
+                <th><a href="{link}"><span>{from}</span>{subject}</a></th>
+                <th><div><a class="little-btn" href="#forward"><span class="forward"></span></a>
+                        <a class="little-btn" href="#reply-all"><span class="reply-all"></span></a>
+                        <a class="little-btn" href="#reply"><span class="reply"></span></a></div></th>
+            </tr>
+            <tr><th colspan="3" class="headers"><span><span>From:</span> {fromfull}</span>
+                    <span><span>Date:</span> {date}</span>
+                    <span><span>To:</span> {to}</span>
+                    <a href="#all_headers">Show all headers</a>
+                    <span>{subject}</span></th>
+            </tr>
+            <tr><th colspan="3" class="attachments"><a href="#text_html">HTML</a><a href="#text_plain">PLAIN</a></th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="3"></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="message compose">
+        <thead>
+            <tr><th><a class="little-btn" href="#close-message"><span class="close"></span></a></th>
+                <th><a href="{link}"><span>{to}</span>{subject}</a></th>
+                <th><a class="little-btn" href="#attach"><span class="attach"></span></a>
+                    <a class="little-btn" href="#format"><span class="format"></span></a>
+                    <a class="little-btn" href="#send"><span class="send">Send</span></a></th>
+            </tr>
+            <tr><th colspan="2"><select class="from"></select></th>
+                <th><a class="little-btn checked" href="#sign"><span class="pen">Sign</span></a>
+                    <a class="little-btn checked" href="#encrypt"><span class="key">Encrypt</span></a></th>
+            </tr>
+            <tr><th colspan="3"><input class="recipients" type="email" /></th></tr>
+            <tr><th colspan="3"><input class="subject" type="text" /></th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="3"><textarea>{message}</textarea></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="message contact">
+        <thead>
+            <tr><th><a class="little-btn" href="#close-message"><span class="close"></span></a></th>
+                <th><a href="{link}"><span>{title}</span></a></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="3"><pre>{contact}</pre></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

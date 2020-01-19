@@ -1,0 +1,48 @@
+<?php
+include_once 'config.php';
+if(count($_POST))
+{
+	if(!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $_POST['username']) || strlen($_POST['username']) > 20)
+		$errors = true;
+
+	if(!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $_POST['reset']))
+		$errors = true;
+		
+	if(!count($errors))
+	{
+		$stmt = $link->prepare('SELECT * FROM users WHERE username=:username AND reset=:reset AND email!=""');
+		$stmt->execute(array(
+			':username' => $_POST['username'],
+			':reset' => hash('sha512', $_POST['reset'] + SALT)
+		));
+		
+		$user = $stmt->fetch();
+		
+	}
+}
+?>
+<div class="dialog" id="reset">
+<h1>Password reset</h1>
+<p>Enter your email or username below to send a reset link.</p>
+<?php if($errors) { ?>
+<p class="error">There was an error resetting your account.</p>
+<?php } ?>
+<table class="fancy">
+<thead>
+<tr>
+<th colspan="2">Enter a Username OR Email address:</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Username</td>
+<td><input name="reset-user" id="reset-user" type="text" /></td>
+</tr>
+<tr>
+<td>Reset key</td>
+<td><input name="reset-key" id="reset-key" type="password" /></td>
+</tr>
+</tbody>
+</table>
+<p style="text-align:center;"><a href="#intro" class="intro-btn" style="background-color:#FF8800;">Home</a><a href="#reset-submit" class="intro-btn" style="background-color:#336688;">Reset</a></p>
+</div>

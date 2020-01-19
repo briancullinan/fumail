@@ -1,0 +1,102 @@
+<?php include_once 'config.php'; ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="target-densitydpi=device-dpi, initial-scale=1.0, user-scalable=no" />
+<title>Welcome to FUMAIL</title>
+<link rel="stylesheet" type="text/css" href="/style.css"/>
+<link rel="stylesheet" type="text/css" href="/media.css"/>
+<link rel="stylesheet" type="text/css" href="/jquery-te-1.4.0.css"/>
+<script type="text/javascript" src="/rollups/sha1.js"></script>
+<script type="text/javascript" src="/rollups/tripledes.js"></script>
+<script type="text/javascript" src="/jquery.js"></script>
+<script type="text/javascript" src="/jquery.cookie.js"></script>
+<script type="text/javascript" src="/jquery.hive.js"></script>
+<script type="text/javascript" src="/jquery.scrollintoview.js"></script>
+<script type="text/javascript" src="/jquery.sortElements.js"></script>
+<script type="text/javascript" src="/jquery.watermark.min.js"></script>
+<script type="text/javascript" src="/jquery-te-1.4.0.min.js"></script>
+<script type="text/javascript" src="/google.js"></script>
+<script type="text/javascript" src="/openpgp.js"></script>
+<script type="text/javascript" src="/mail.js"></script>
+<script type="text/javascript" src="/decrypt.js"></script>
+<script type="text/javascript" src="/nav.js"></script>
+
+<!--<script language="JavaScript" type="text/javascript" src="/worker.generate.js"></script>
+<script language="JavaScript" type="text/javascript" src="/wu/jsbn.js"></script>
+<script language="JavaScript" type="text/javascript" src="/wu/jsbn2.js"></script>
+<script language="JavaScript" type="text/javascript" src="/wu/prng4.js"></script>
+<script language="JavaScript" type="text/javascript" src="/wu/rng.js"></script>
+<script language="JavaScript" type="text/javascript" src="/wu/rsa.js"></script>
+<script language="JavaScript" type="text/javascript" src="/wu/rsa2.js"></script>
+-->
+
+
+<script type="text/javascript">
+
+// initialize everything using functions from mail.js
+$(document).ready(function () {
+	openpgp.init();
+	$(window).on('hashchange', checkHash);
+	
+	decryptAccounts(); // decrypt local account information
+	
+	var params = {}, 
+		queryString = window.location.hash.substring(1),
+		regex = /([^&=]+)=([^&]*)/g, m;
+	while (m = regex.exec(queryString)) {
+		params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+	}
+	
+	if(typeof params['state'] != 'undefined')
+		window[params['state']].call(this, params);
+	else
+		returnPath = window.location.hash;
+	
+	if(accounts.length > 0)
+		window.location.hash = '#mail';
+	else
+		window.location.hash = '#intro';
+	
+	// fire hash changed at least once
+	$(window).trigger('hashchange');
+				
+	setBindings();
+});
+
+</script>
+</head>
+
+<body>
+<div id="nav">
+    <ul id="menu">
+        <li><a href="#mail"><span>Mail</span></a></li>
+        <li><a href="#folders"><span>Folders</span></a></li>
+        <li><a href="#write"><span class="pen">Write</span></a></li>
+        <li><a href="#login"><span class="settings">Sign in</span></a></li>
+        <li><a href="#keys"><span class="key">Keys</span></a></li>
+        <li><a href="#how"><span>? About</span></a></li>
+    </ul>
+    <ul id="folders"></ul>
+    <ul id="contacts"></ul>
+</div>
+<div id="content">
+    <div id="menubar">
+        <a href="#menu" class="little-btn"><span>Menu</span></a>
+        <h1>FuMail</h1>
+        <a href="#search" class="little-btn"><span>Search</span></a>
+        <div id="search"><input name="search" type="text" /></div>
+    </div>
+    <?php include 'intro.php'; ?>
+    <?php include 'how.php'; ?>
+    <?php include 'login.php'; ?>
+    <?php include 'keys.php'; ?>
+    <div id="paging">
+        <span id="count"></span>
+        <a href="#back" class="little-btn"><span class="back"></span></a><a href="#next" class="little-btn"><span class="next"></span></a>
+    </div>
+    <div id="mail" class="dialog"></div>
+</div>
+</body>
+</html>

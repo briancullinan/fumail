@@ -1,0 +1,48 @@
+// a web worker for decrypting and encrypting in the
+//   background so as not to interupt the user interface
+
+importScripts('/jquery.hive.pollen.js');
+
+$(function (data) {
+	$.send('Importing scripts');
+	// openPGP uses this for some reason, there's NO DOM!
+	$.text = function (data) {
+		return {html: function ()
+			{
+				return data;
+			}
+		}
+	};
+	
+	// fix for openpgp errors
+	window = {
+		// Can't use local storage in Web Worker, we have to import them
+		localStorage: {
+			getItem: function (name) { 
+				return typeof localStorage[name] == 'undefined' 
+					? null 
+					: localStorage[name]; },
+			setItem: function (name, value) { localStorage[name] = value; }
+		}
+	};
+	
+	var localStorage = {};
+	
+	try {
+		importScripts('/rollups/sha1.js');
+		importScripts('/rollups/tripledes.js');
+		importScripts('/openpgp.js');
+		openpgp.init();
+		importScripts('/mail.js');
+		importScripts('/decrypt.js');
+		$.send('Done importing');
+		
+		// fullfill request from hive
+		$.send('Decrypt mime');
+		decryptMIME(data);
+	}
+	catch (e)
+	{
+		showMessages(e);
+	}
+});

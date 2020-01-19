@@ -1,0 +1,29 @@
+// JavaScript Document
+importScripts('/jquery.hive.pollen.js');
+importScripts('/mail.js');
+
+try
+{
+	$(function (post) {
+		post.download = true;
+		// get the message from the server
+		$.ajax.post({
+			url: '/mail.php',
+			dataType: 'text/json',
+			data: post,
+			success: function (data) {
+				parseMIME(data.text, function (result) {
+					$.send(result);
+				});
+				// merge output and headers
+				//var blob = new Blob([decOutput], {type: 'text/plain'});
+				//var blobURL = window.URL.createObjectURL(blob);
+				//$.send(blobURL);
+			}
+		});
+	});
+}
+catch (e)
+{
+	self.postMessage(e);
+}

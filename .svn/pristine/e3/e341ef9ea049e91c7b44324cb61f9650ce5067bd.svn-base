@@ -1,0 +1,9 @@
+2013-07-31
+Minimized XSS attack surface by adding encodeURIComponent() where the hash is used as a link in message headers on the page.
+
+2013-07-17
+Added a workQueue to queue web Workers to perform very specific tasks,
+	This fixes the issue with the loading bars disappear at different times, now the queue is checked for all work to be completed before remove the loading symbol
+	This could be prioritized easily, so user initiated actions come before background work
+	This will be extended to support loading all e-mails in the background and storing them in a local database, but the spec isn't completely implemented
+	

@@ -1,0 +1,311 @@
+/* CSS Document */
+
+a[href="#all_headers"]:hover,
+.attachments a:hover,
+.intro-btn:hover,
+.little-btn:hover
+{
+	text-decoration:underline;
+	background-position:50% 50%;
+}
+
+.little-btn span {
+    min-width:24px;
+    min-height:24px;
+}
+
+.intro-btn span,
+.little-btn span
+{
+	display:block;
+}
+
+.intro-btn:hover span,
+.little-btn:hover span
+{
+}
+
+a[href="#all_headers"],
+.attachments a, .intro-btn,
+.little-btn, .jqte_linkbutton
+{
+	font-size:2em;
+	font-weight:300;
+	background-image:url("/overlay.png");
+	background-repeat:repeat-x;
+	background-position:0% 0%;
+	color:#FFFFFF;
+	padding:0.1em 0.2em;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25), -2px 0 1px rgba(0, 0, 0, 0.25);
+	text-decoration:none;
+	border-radius: 2px;
+	margin:0.2em;
+	display:inline-block;
+	vertical-align:middle;
+	white-space:nowrap;
+}
+
+a[href="#all_headers"]
+{
+    float:right;
+}
+a[href="#all_headers"],
+.attachments a,
+.little-btn
+{
+	font-size:1.5em;
+	font-weight:400;
+}
+
+#menu .settings
+{
+	background: url("/icons.png") no-repeat scroll right -470px transparent;
+	display: inline-block;
+	width: 88%;
+}
+
+.little-btn .close
+{
+	background: url("/icons2.png") no-repeat scroll 0px -373px transparent;
+}
+
+#menu .key
+{
+	background: url("/key.png") no-repeat scroll right center transparent;
+	display: inline-block;
+	width: 85%;
+}
+
+a[href="#all_headers"],
+.attachments a
+{
+    font-size:0.8em;
+}
+
+a[href="#attach"],
+a[href="#format"],
+a[href="#send"],
+a[href="#close-message"],
+a[href="#reply"],
+a[href="#reply-all"],
+a[href="#forward"],
+a[href="#cancel-send"]
+{
+	font-size:0.8em;
+	margin:2px;
+	padding:0px;
+}
+
+a[href="#close-message"]
+{
+	background-color:#33AABB;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:201;
+}
+
+#paging a[href="#next"],
+#paging a[href="#back"]
+{
+	margin:0px;
+	padding:5px;
+	background-color:#777;
+}
+#paging .next,
+#paging .back
+{
+	width:19px;
+}
+
+#paging .next
+{
+	background: url("/icons.png") no-repeat scroll 0px -105px transparent;
+}
+
+#paging .back
+{
+	background: url("/icons.png") no-repeat scroll 0px -171px transparent;
+}
+
+a.imap
+{
+	background-color:#666;
+}
+
+a[href="#encrypt"],
+a[href="#sign"]
+{
+	background-color:#777;
+}
+
+a[href="#all_headers"],
+.attachments a,
+a[href="#backup-submit"],
+a[href="#reply"],
+a[href="#reply-all"],
+a[href="#forward"]
+{
+	background-color:#336688;
+}
+
+#login .google
+{
+	display:inline-block;
+	background: url("/icons4.png") no-repeat scroll -428px -600px transparent;
+}
+
+.message .reply-all
+{
+	background: url("/icons2i.png") no-repeat scroll 0px -22px transparent;
+}
+
+.message .reply
+{
+	background: url("/icons2i.png") no-repeat scroll 0px -190px transparent;
+}
+
+.message .forward
+{
+	background: url("/icons2i.png") no-repeat scroll 0px -478px transparent;
+}
+
+.how
+{
+	font-weight: 700;
+	left: 80%;
+	opacity: 0.8;
+	position: absolute;
+}
+
+.compose .pen
+{
+	padding-left:24px;
+	background: url("/peni.png") no-repeat scroll 0px 0px transparent;
+}
+
+#menu .pen
+{
+	background: url("/pen.png") no-repeat scroll right center transparent;
+	display: inline-block;
+	width: 88%;
+}
+
+.message .attach
+{
+	background: url("/icons3.png") no-repeat scroll 0px -40px transparent;
+}
+
+.message .format
+{
+	background: url("/icons3.png") no-repeat scroll 0px -64px transparent;
+}
+
+.message .send
+{
+	background: url("/icons2i.png") no-repeat scroll right -724px transparent;
+    padding: 0 24px 0 10px;
+}
+
+#login-types a span
+{
+	color:#930;
+}
+
+a[href="#login-linkedin"],
+a[href="#login-twitter"],
+a[href="#login-facebook"],
+a[href="#login-yahoo"]
+{
+	opacity:.5;
+}
+
+a[href="#login-linkedin"]
+{
+}
+
+a[href="#login-other"]
+{
+}
+
+a[href="#login-twitter"]
+{
+}
+
+a[href="#login-facebook"]
+{
+}
+
+a[href="#search"]
+{
+	display:inline-block;
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+a[href="#start-exchange"],
+a[href="#import"],
+a[href="#sign"].checked,
+a[href="#search"],
+a[href="#create-key"]
+{
+	background-color:#33AABB;
+}
+
+a[href="#login-yahoo"]
+{
+}
+
+a[href="#cancel-send"],
+a[href="#send-unencrypted"],
+a[href="#logout-submit"]
+{
+	background-color:#FF3311;
+}
+
+a.google
+{
+	background-color:#03C;
+}
+
+a[href="#encrypt"],
+a[href="#sign"]
+{
+    float:right;
+	margin: 1px;
+	padding: 4px 5px;
+    font-size:0.8em;
+}
+
+.sending a[href="#cancel-send"]
+{
+    display:block;
+}
+
+.sending a[href="#cancel-send"] span
+{
+    background-position: right -373px;
+    padding: 0 24px 0 10px;
+}
+
+a[href="#cancel-send"]
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+    display:none;
+    z-index:200;
+}
+
+a[href="#encrypt"].checked
+{
+	background-color:#33AA99;
+}
+
+a[href="#format"].checked
+{
+	background-color:#BBBB33;
+}
+
+
