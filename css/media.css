@@ -1,0 +1,97 @@
+/* CSS Document */
+@media (min-width:25em)
+{
+	.menu #content
+	{
+		margin-left:15em;
+	}
+}
+
+@media (min-width:40em)
+{
+    .menu #menubar h1 {
+        margin-left:-18.75em;
+    }
+}
+
+@media (min-width:46em)
+{
+
+	.dialog > *:first-child
+	{
+        margin:2.25em 0 0;
+	}
+
+	#mail a {
+		font-size:1em;
+		padding:0;
+		height: 1.7em;
+	}
+	
+	#mail a span {
+		background-color:inherit;
+	}
+	
+	#mail a span:nth-child(2) {
+		width:22%;
+		position:static;
+		font-size:1em;
+	}
+	
+	#mail a span:nth-child(3) {
+		width:54%;
+	}
+	
+	#mail a span:nth-child(4) {
+		max-width:22%;
+		position:absolute;
+		right:0px;
+		font-size:1em;
+	}
+
+    #accounts,
+	#login-types,
+	#login > ul,
+	#intro div,
+	#intro ul {
+		margin:2.2em 0 0;
+		clear:none;
+		display:inline-block;
+		width: 48%;
+        box-sizing: border-box;
+        vertical-align: top;
+	}
+}
+
+@media (min-width:60em)
+{
+	.menu #nav, #nav 
+	{
+		display: block;
+		overflow: auto;
+		position: fixed;
+		height: 100%;
+	}
+	
+	.menu #content, #content
+	{
+		position:relative;
+		margin-left:16em;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        width:auto;
+	}
+	
+	.menu #menubar, #menubar
+	{
+		margin-left:inherit;
+	}
+	
+	#search
+	{
+		max-width:15em;
+	}
+	
+	.menu #menubar h1, #menubar h1 {
+		margin-left: -18.75em;
+	}
+}
